@@ -7,74 +7,128 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
-      --bg: #0b1120; --card: #131c31; --card2: #19243d;
-      --text: #f8fafc; --muted: #94a3b8; --accent: #1d8cf8;
-      --green: #10b981; --border: #1e293b;
+      --bg: #070d19; --card: #111b2e; --card2: #17233b;
+      --text: #f8fafc; --muted: #94a3b8; --accent: #2563eb;
+      --cyan: #06b6d4; --green: #10b981; --border: #1e293b;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text); padding-bottom: 84px; -webkit-tap-highlight-color: transparent; }
-    .header { padding: 12px 16px 8px; position: sticky; top: 0; background: rgba(11,17,32,0.96); backdrop-filter: blur(8px); z-index: 20; }
+    body { background: radial-gradient(circle at top, #0f1f3d 0%, var(--bg) 55%); color: var(--text); padding-bottom: 88px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+
+    /* RULON PAKET OCHILISH VA ORQADAN OLDINGA 3D ANIMATSIYALAR */
+    @keyframes unrollCurtain {
+      0% { opacity: 0; transform: perspective(900px) rotateX(-24deg) translateY(-24px) scale(0.92); filter: blur(4px); }
+      100% { opacity: 1; transform: perspective(900px) rotateX(0deg) translateY(0) scale(1); filter: blur(0); }
+    }
+    @keyframes depthZoomIn {
+      0% { opacity: 0; transform: scale(0.76) translateY(28px); }
+      70% { opacity: 1; transform: scale(1.02) translateY(-2px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @keyframes floatAura {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-4px); }
+    }
+
+    .unroll-stage { animation: unrollCurtain 0.65s cubic-bezier(0.22, 1, 0.36, 1) both; transform-origin: top center; }
+
+    .header { padding: 12px 16px 10px; position: sticky; top: 0; background: rgba(7,13,25,0.92); backdrop-filter: blur(12px); z-index: 20; border-bottom: 1px solid rgba(255,255,255,0.05); }
     .greet-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .greet-txt { font-size: 16px; font-weight: 800; }
-    .greet-tier { font-size: 11px; background: rgba(16,185,129,0.16); color: #6ee7b7; padding: 4px 9px; border-radius: 12px; font-weight: 700; }
-    .search-box { display: flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; }
+    .greet-txt { font-size: 16px; font-weight: 800; background: linear-gradient(90deg, #fff, #93c5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .greet-tier { font-size: 11px; background: rgba(16,185,129,0.16); color: #6ee7b7; padding: 4px 10px; border-radius: 12px; font-weight: 700; border: 1px solid rgba(16,185,129,0.3); }
+
+    .search-box { display: flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 10px 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
     .search-box input { background: transparent; border: none; outline: none; color: var(--text); font-size: 15px; width: 100%; }
-    .cats-pills { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0 2px; scrollbar-width: none; }
-    .cats-pills::-webkit-scrollbar { display: none; }
-    .cat-btn { background: var(--card); color: var(--muted); border: 1px solid var(--border); padding: 7px 14px; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer; }
-    .cat-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
-    .section { padding: 10px 16px; display: none; }
-    .section.active { display: block; }
+
+    /* QIDIRUV VA SARALASH FILTRLARI */
+    .filter-bar { display: flex; gap: 7px; overflow-x: auto; padding: 10px 0 2px; scrollbar-width: none; }
+    .filter-bar::-webkit-scrollbar { display: none; }
+    .f-chip { background: var(--card2); color: #cbd5e1; border: 1px solid var(--border); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap; cursor: pointer; transition: 0.2s; }
+    .f-chip.active { background: linear-gradient(135deg, var(--accent), var(--cyan)); color: #fff; border-color: transparent; box-shadow: 0 4px 12px rgba(37,99,235,0.35); }
+
+    .section { padding: 12px 16px; display: none; }
+    .section.active { display: block; animation: unrollCurtain 0.5s ease both; }
+
+    .promo-banner { background: linear-gradient(135deg, #1d4ed8, #4f46e5, #0891b2); border-radius: 18px; padding: 16px; margin-bottom: 18px; cursor: pointer; box-shadow: 0 12px 28px rgba(29,78,216,0.3); position: relative; overflow: hidden; }
+    .promo-banner::after { content: "💊"; position: absolute; right: 14px; bottom: -6px; font-size: 56px; opacity: 0.22; animation: floatAura 3s ease-in-out infinite; }
+    .promo-title { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
+    .promo-sub { font-size: 13px; color: #e0f2fe; }
+
     .sec-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .sec-title { font-size: 18px; font-weight: 700; }
-    .sec-link { font-size: 13px; color: var(--accent); font-weight: 600; cursor: pointer; }
-    .promo-banner { background: linear-gradient(135deg, #2563eb, #4f46e5); border-radius: 16px; padding: 16px; margin-bottom: 18px; cursor: pointer; }
-    .promo-tag { font-size: 12px; color: #c7d2fe; margin-bottom: 4px; }
-    .promo-title { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
-    .promo-sub { font-size: 13px; color: #e0e7ff; line-height: 1.35; }
+    .sec-title { font-size: 18px; font-weight: 800; }
+
     .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .p-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; }
-    .p-thumb { position: relative; height: 122px; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 8px; }
-    .p-thumb img { width: 100%; height: 100%; object-fit: cover; }
-    .p-id-badge { position: absolute; top: 6px; left: 6px; background: rgba(11,17,32,0.78); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+
+    /* QALQIB TURUVCHI VA BOSGANDA BITTA KATTALASHUVCHI KARTOCHKA */
+    .p-card {
+      background: linear-gradient(180deg, var(--card2) 0%, var(--card) 100%);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 18px; padding: 10px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      cursor: pointer; position: relative;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+      transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.22s ease;
+      animation: depthZoomIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .p-card.pop-zoom { transform: scale(1.08) translateY(-6px) !important; box-shadow: 0 18px 36px rgba(37,99,235,0.45); z-index: 15; }
+
+    .p-thumb { position: relative; height: 120px; border-radius: 13px; overflow: hidden; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; background: linear-gradient(135deg, #e0f2fe, #bae6fd); }
+    .p-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.35s ease; }
+    .p-card:hover .p-thumb img { transform: scale(1.06); }
+    .p-brand-tag { position: absolute; top: 6px; left: 6px; background: rgba(7,13,25,0.8); color: #93c5fd; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 9px; }
     .disc-badge { position: absolute; bottom: 6px; left: 6px; background: #ef4444; color: #fff; font-size: 11px; font-weight: 800; padding: 2px 7px; border-radius: 8px; }
-    .like-btn { position: absolute; top: 6px; right: 6px; width: 30px; height: 30px; border-radius: 50%; border: none; background: rgba(15,23,42,0.72); color: #fff; font-size: 15px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 3; }
-    .like-btn.liked { color: #ef4444; background: rgba(255,255,255,0.92); }
-    .p-name { font-size: 13px; font-weight: 700; line-height: 1.3; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .p-sub { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
-    .p-old-price { font-size: 11.5px; color: #94a3b8; text-decoration: line-through; }
-    .p-price { font-size: 15px; font-weight: 800; margin-bottom: 2px; }
-    .p-stock { font-size: 11.5px; color: var(--green); font-weight: 600; margin-bottom: 8px; }
-    .card-cart-btn { width: 100%; height: 36px; border-radius: 10px; border: none; background: var(--accent); color: #fff; font-size: 13.5px; font-weight: 700; cursor: pointer; }
-    .card-qty-bar { width: 100%; height: 36px; border-radius: 10px; background: var(--card2); border: 1px solid var(--accent); display: flex; align-items: center; justify-content: space-between; padding: 0 8px; }
-    .card-qty-bar button { background: var(--accent); color: #fff; border: none; width: 26px; height: 26px; border-radius: 7px; font-size: 16px; font-weight: 800; cursor: pointer; }
-    .card-qty-bar span { font-size: 14px; font-weight: 800; }
-    .full-modal { position: fixed; inset: 0; background: var(--bg); z-index: 100; overflow-y: auto; display: none; padding-bottom: 34px; }
-    .full-modal.open { display: block; }
-    .fm-topbar { position: sticky; top: 0; z-index: 15; background: rgba(11,17,32,0.94); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
-    .fm-back { background: rgba(255,255,255,0.08); border: none; color: #fff; font-size: 14px; font-weight: 600; padding: 7px 14px; border-radius: 10px; cursor: pointer; }
-    .dm-box { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 12px; }
-    .dm-kv { display: flex; justify-content: space-between; gap: 14px; padding: 7px 0; font-size: 13px; }
-    .dm-kv:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .dm-k { color: var(--muted); }
-    .dm-v { text-align: right; font-weight: 600; }
-    .more-list { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
-    .more-row { display: flex; align-items: center; justify-content: space-between; padding: 15px 16px; cursor: pointer; font-size: 15px; font-weight: 500; }
-    .more-row:not(:last-child) { border-bottom: 1px solid var(--border); }
-    .cart-item { display: flex; justify-content: space-between; align-items: center; background: var(--card); padding: 12px; border-radius: 12px; margin-bottom: 8px; }
+    .like-btn { position: absolute; top: 6px; right: 6px; width: 29px; height: 29px; border-radius: 50%; border: none; background: rgba(15,23,42,0.75); color: #fff; font-size: 14px; display: flex; align-items: center; justify-content: center; z-index: 3; }
+    .like-btn.liked { color: #ef4444; background: #fff; }
+
+    .p-name { font-size: 13px; font-weight: 700; line-height: 1.3; margin-bottom: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .p-meta-row { display: flex; justify-content: space-between; font-size: 10.5px; color: #fbbf24; margin-bottom: 5px; font-weight: 700; }
+    .p-old-price { font-size: 11px; color: #94a3b8; text-decoration: line-through; }
+    .p-price { font-size: 15px; font-weight: 800; margin-bottom: 2px; color: #fff; }
+    .p-stock { font-size: 11px; color: var(--green); font-weight: 600; margin-bottom: 8px; }
+
+    .card-cart-btn { width: 100%; height: 35px; border-radius: 10px; border: none; background: linear-gradient(135deg, var(--accent), #1d4ed8); color: #fff; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .card-qty-bar { width: 100%; height: 35px; border-radius: 10px; background: var(--bg); border: 1px solid var(--accent); display: flex; align-items: center; justify-content: space-between; padding: 0 8px; }
+    .card-qty-bar button { background: var(--accent); color: #fff; border: none; width: 25px; height: 25px; border-radius: 7px; font-size: 16px; font-weight: 800; }
+
+    /* TO'LIQ TOVAR KARTASI VA RULON OCHILISHI */
+    .full-modal { position: fixed; inset: 0; background: var(--bg); z-index: 100; overflow-y: auto; display: none; padding-bottom: 36px; }
+    .full-modal.open { display: block; animation: unrollCurtain 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
+    .fm-topbar { position: sticky; top: 0; z-index: 15; background: rgba(7,13,25,0.95); backdrop-filter: blur(10px); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+    .fm-back { background: rgba(255,255,255,0.1); border: none; color: #fff; font-size: 14px; font-weight: 600; padding: 7px 14px; border-radius: 10px; cursor: pointer; }
+
+    .info-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 12px; }
+    .info-card h4 { font-size: 13px; color: #60a5fa; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+    .info-card p { font-size: 13px; line-height: 1.45; color: #e2e8f0; }
+
+    .star-bar { display: flex; gap: 8px; margin-top: 8px; }
+    .star-btn { flex: 1; padding: 8px 0; border-radius: 10px; border: 1px solid var(--border); background: var(--card2); color: #fbbf24; font-size: 14px; font-weight: 800; cursor: pointer; }
+    .star-btn:active { transform: scale(1.12); background: #fbbf24; color: #000; }
+
+    /* PASTKI MENYU + O'RTADA MAXSUS QR TUGMASI */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 68px; background: rgba(17,27,46,0.96); backdrop-filter: blur(12px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 50; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--muted); font-size: 10.5px; cursor: pointer; position: relative; flex: 1; }
+    .nav-item.active { color: #60a5fa; font-weight: 700; }
+    .qr-center-btn {
+      width: 54px; height: 54px; border-radius: 18px;
+      background: linear-gradient(135deg, #2563eb, #06b6d4);
+      color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      margin-top: -22px; box-shadow: 0 8px 22px rgba(6,182,212,0.45);
+      border: 3px solid var(--bg); font-size: 10px; font-weight: 800; cursor: pointer;
+    }
+    .badge { position: absolute; top: -4px; right: 16px; background: #ef4444; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 10px; }
+
+    .cart-item { display: flex; justify-content: space-between; align-items: center; background: var(--card); padding: 12px; border-radius: 14px; margin-bottom: 8px; border: 1px solid var(--border); }
     .form-group { margin-top: 12px; }
     .form-group label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 5px; }
-    .form-group input, .form-group select { width: 100%; padding: 11px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 14px; }
-    .card-copy-box { background: rgba(29,140,248,0.14); border: 1px dashed var(--accent); border-radius: 12px; padding: 12px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
-    .submit-btn { width: 100%; padding: 14px; border-radius: 12px; border: none; background: var(--green); color: #fff; font-size: 16px; font-weight: 700; margin-top: 16px; cursor: pointer; }
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 66px; background: var(--card); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 50; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--muted); font-size: 11px; cursor: pointer; position: relative; }
-    .nav-item.active { color: var(--accent); font-weight: 700; }
-    .badge { position: absolute; top: -4px; right: -8px; background: #ef4444; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 10px; }
-    .toast { position: fixed; top: 18px; left: 50%; transform: translateX(-50%); background: var(--green); color: #fff; padding: 9px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; z-index: 250; display: none; }
+    .form-group input, .form-group select { width: 100%; padding: 11px 12px; border-radius: 11px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 14px; }
+    .card-copy-box { background: rgba(37,99,235,0.14); border: 1px dashed #60a5fa; border-radius: 12px; padding: 12px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
+    .submit-btn { width: 100%; padding: 14px; border-radius: 13px; border: none; background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-size: 16px; font-weight: 700; margin-top: 14px; cursor: pointer; }
+    .more-list { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+    .more-row { display: flex; align-items: center; justify-content: space-between; padding: 15px 16px; cursor: pointer; font-size: 15px; }
+    .more-row:not(:last-child) { border-bottom: 1px solid var(--border); }
+    .toast { position: fixed; top: 18px; left: 50%; transform: translateX(-50%); background: var(--green); color: #fff; padding: 9px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; z-index: 250; display: none; }
   </style>
 </head>
-<body>
+<body class="unroll-stage">
 
 <div class="toast" id="toast">Бажарилди!</div>
 
@@ -85,43 +139,55 @@
   </div>
   <div class="search-box">
     <span>🔍</span>
-    <input type="text" id="searchInput" placeholder="Излаш..." oninput="onSearchInput()" />
+    <input type="text" id="searchInput" placeholder="Масалан: Омега, Витамин D3..." oninput="onSearchInput()" />
   </div>
-  <div class="cats-pills" id="catPills" style="display:none;"></div>
+  <div class="filter-bar" id="filterBar">
+    <button class="f-chip active" onclick="setSort('default', this)">✨ Барчаси</button>
+    <button class="f-chip" onclick="setSort('cheap', this)">💵 Арзонроқ</button>
+    <button class="f-chip" onclick="setSort('expensive', this)">💎 Қимматроқ</button>
+    <button class="f-chip" onclick="setSort('rating', this)">⭐ Топ рейтинг</button>
+    <button class="f-chip" onclick="setSort('discount', this)">🔥 Чегирмали</button>
+  </div>
 </div>
 
 <!-- 1. HOME -->
 <div class="section active" id="sec-home">
   <div class="promo-banner" onclick="switchTab('cat')">
-    <div class="promo-tag" id="t_season_tag">Мавсумий танлов</div>
-    <div class="promo-title" id="t_season_title">❄️ Куз-Қиш: Иммунитет ва Қувват</div>
-    <div class="promo-sub" id="t_season_sub">Сараланган витаминлар ва БАДлар →</div>
+    <div style="font-size:11px;color:#bae6fd;margin-bottom:3px;">VITORA | SMART PHARM</div>
+    <div class="promo-title">❄️ Иммунитет ва Қувват</div>
+    <div class="promo-sub">Оригинал БАД ва витаминлар каталоги →</div>
   </div>
   <div class="sec-head">
     <div class="sec-title" id="t_avail_title">Мавжуд маҳсулотлар</div>
-    <div class="sec-link" id="totalCountLbl" onclick="switchTab('cat')">→</div>
   </div>
   <div class="grid" id="homePopularGrid"></div>
 </div>
 
 <!-- 2. CATALOG -->
 <div class="section" id="sec-cat">
-  <div class="sec-head"><div class="sec-title" id="catSecTitle">Каталог</div></div>
+  <div class="sec-head"><div class="sec-title" id="catTitle">Каталог</div></div>
+  <div class="filter-bar" id="brandChips" style="margin-bottom:10px;"></div>
   <div class="grid" id="catalogGrid"></div>
 </div>
 
 <!-- 3. CART -->
 <div class="section" id="sec-cart">
-  <div class="sec-title" id="t_cart_title" style="margin-bottom:6px;">🛒 Саватча</div>
-  <div id="t_bron_note" style="font-size:12px;color:#fbbf24;margin-bottom:10px;">⏳ Саватчага олинган товарлар 15 дақиқага банд қилинади.</div>
+  <div class="sec-title" style="margin-bottom:4px;">🛒 Саватча</div>
+  <div style="font-size:12px;color:#fbbf24;margin-bottom:10px;">⏳ Товарлар 15 дақиқага сиз учун банд қилинади.</div>
   <div id="cartList"></div>
-  <div id="cartTotalBox" style="font-size:17px;font-weight:700;margin:12px 0;"></div>
+  <div id="bonusToggleBox" style="display:none;background:var(--card);padding:11px;border-radius:12px;margin:10px 0;border:1px solid var(--border);">
+    <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;">
+      <input type="checkbox" id="chkUseBonus" onchange="renderCart()" />
+      <span id="bonusChkText">🎁 Бонусни ишлатиш</span>
+    </label>
+  </div>
+  <div id="cartTotalBox" style="font-size:17px;font-weight:800;margin:10px 0;"></div>
 
   <div id="orderForm" style="display:none;">
-    <div class="form-group"><label id="t_lbl_name">Исмингиз</label><input type="text" id="inpName" /></div>
-    <div class="form-group"><label id="t_lbl_phone">Телефон</label><input type="tel" id="inpPhone" placeholder="+998 90 123 45 67" /></div>
+    <div class="form-group"><label>Исмингиз</label><input type="text" id="inpName" /></div>
+    <div class="form-group"><label>Телефон</label><input type="tel" id="inpPhone" placeholder="+998 90 123 45 67" /></div>
     <div class="form-group">
-      <label id="t_lbl_deliv">Олиб кетиш усули</label>
+      <label>Олиб кетиш усули</label>
       <select id="inpDelivery" onchange="toggleAddress()">
         <option value="Дорихонадан олиб кетиш">🏥 Дорихонадан олиб кетиш</option>
         <option value="Курьер орқали етказиб бериш">🚚 Курьер орқали етказиб бериш</option>
@@ -129,7 +195,7 @@
     </div>
     <div class="form-group" id="addrGroup" style="display:none;"><label>Манзил</label><input type="text" id="inpAddress" /></div>
     <div class="form-group">
-      <label id="t_lbl_pay">Тўлов тури</label>
+      <label>Тўлов тури</label>
       <select id="inpPayment" onchange="toggleCardBox()">
         <option value="Click">💳 Click</option>
         <option value="Payme">💳 Payme</option>
@@ -139,39 +205,44 @@
     <div class="card-copy-box" id="cardCopyBox">
       <div>
         <div style="font-size:11px;color:var(--muted);">Click / Payme учун карта:</div>
-        <div style="font-size:15px;font-weight:800;letter-spacing:0.5px;" id="humoCardNum">9860 1501 1189 2918</div>
+        <div style="font-size:15px;font-weight:800;" id="humoCardNum">9860 1501 1189 2918</div>
       </div>
       <button type="button" onclick="copyCardNum()" style="background:var(--accent);color:#fff;border:none;padding:7px 12px;border-radius:9px;font-weight:700;">📋 Нусха</button>
     </div>
-    <button class="submit-btn" id="t_btn_order" onclick="submitOrder()">✅ Буюртмани тасдиқлаш</button>
+    <button class="submit-btn" onclick="submitOrder()">✅ Буюртмани тасдиқлаш</button>
   </div>
 </div>
 
 <!-- 4. MORE -->
 <div class="section" id="sec-more">
-  <div class="sec-title" id="t_more_title" style="margin-bottom:14px;">Яна</div>
+  <div class="sec-title" style="margin-bottom:14px;">Яна</div>
   <div class="more-list">
-    <div class="more-row" onclick="openMoreSub('profile')"><span id="m_prof">🪪 Менинг QR-кодим ва Профил</span><span>›</span></div>
-    <div class="more-row" onclick="openMoreSub('favs')"><span id="m_favs">♡ Севимлилар</span><span>›</span></div>
-    <div class="more-row" onclick="openMoreSub('loc')"><span id="m_loc">📍 Жойлашув</span><span>›</span></div>
-    <div class="more-row" onclick="openMoreSub('news')"><span id="m_news">📰 Янгиликлар</span><span>›</span></div>
+    <div class="more-row" onclick="openQrModal()"><span>🪪 Менинг QR-кодим ва Бонус</span><span>›</span></div>
+    <div class="more-row" onclick="openMoreSub('favs')"><span>♡ Севимлилар</span><span>›</span></div>
+    <div class="more-row" onclick="openMoreSub('loc')"><span>📍 Жойлашув (Самарқанд)</span><span>›</span></div>
+    <div class="more-row" onclick="openMoreSub('news')"><span>📰 Янгиликлар</span><span>›</span></div>
   </div>
 </div>
 
 <div class="full-modal" id="fullModal">
   <div class="fm-topbar">
-    <button class="fm-back" onclick="closeModal()">← Back</button>
-    <div id="fmTopTitle" style="font-size:15px;font-weight:700;"></div>
+    <button class="fm-back" onclick="closeModal()">← Орқага</button>
+    <div id="fmTopTitle" style="font-size:14px;font-weight:700;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
     <div style="width:60px;"></div>
   </div>
   <div id="modalBody"></div>
 </div>
 
+<!-- PASTKI MENYU: KATALOG VA SAVATCHA O'RTASIDA SHAXSIY QR TUGMASI -->
 <div class="bottom-nav">
-  <div class="nav-item active" id="nav-home" onclick="switchTab('home')"><span style="font-size:20px;">🏠</span><span id="n_home">Асосий</span></div>
-  <div class="nav-item" id="nav-cat" onclick="switchTab('cat')"><span style="font-size:20px;">⊞</span><span id="n_cat">Каталог</span></div>
-  <div class="nav-item" id="nav-cart" onclick="switchTab('cart')"><span style="font-size:20px;">🛍</span><span id="n_cart">Саватча</span><span class="badge" id="cartBadge" style="display:none;">0</span></div>
-  <div class="nav-item" id="nav-more" onclick="switchTab('more')"><span style="font-size:20px;">•••</span><span id="n_more">Яна</span></div>
+  <div class="nav-item active" id="nav-home" onclick="switchTab('home')"><span style="font-size:19px;">🏠</span><span id="n_home">Асосий</span></div>
+  <div class="nav-item" id="nav-cat" onclick="switchTab('cat')"><span style="font-size:19px;">⊞</span><span id="n_cat">Каталог</span></div>
+  <div class="qr-center-btn" onclick="openQrModal()">
+    <span style="font-size:20px;line-height:1;">🪪</span>
+    <span>QR КОД</span>
+  </div>
+  <div class="nav-item" id="nav-cart" onclick="switchTab('cart')"><span style="font-size:19px;">🛍</span><span id="n_cart">Саватча</span><span class="badge" id="cartBadge" style="display:none;">0</span></div>
+  <div class="nav-item" id="nav-more" onclick="switchTab('more')"><span style="font-size:19px;">•••</span><span id="n_more">Яна</span></div>
 </div>
 
 <script>
@@ -181,34 +252,10 @@
 
   const urlParams = new URLSearchParams(window.location.search);
   let lang = urlParams.get("lang") || "cyr";
-
-  const I18N = {
-    cyr: {
-      search: "Дори номини излаш...", add: "Саватга", stock: "Қолдиқ", pcs: "дона",
-      n_home: "Асосий", n_cat: "Каталог", n_cart: "Саватча", n_more: "Яна",
-      avail: "Мавжуд маҳсулотлар", loc_title: "Жойлашув",
-      addr: "Самарқанд шаҳар, Қозизода Румий 56 А уй", hours: "08:00 – 24:00 (ҳар куни)",
-      m_prof: "🪪 Менинг QR-кодим ва Профил", m_favs: "♡ Севимлилар", m_loc: "📍 Жойлашув", m_news: "📰 Янгиликлар"
-    },
-    lat: {
-      search: "Dori nomini izlash...", add: "Savatga", stock: "Qoldiq", pcs: "dona",
-      n_home: "Asosiy", n_cat: "Katalog", n_cart: "Savatcha", n_more: "Yana",
-      avail: "Mavjud mahsulotlar", loc_title: "Joylashuv",
-      addr: "Samarqand shahar, Qozizoda Rumiy 56 A uy", hours: "08:00 – 24:00 (har kuni)",
-      m_prof: "🪪 Mening QR-kodim va Profil", m_favs: "♡ Sevimlilar", m_loc: "📍 Joylashuv", m_news: "📰 Yangiliklar"
-    },
-    ru: {
-      search: "Поиск лекарств...", add: "В корзину", stock: "В наличии", pcs: "шт",
-      n_home: "Главная", n_cat: "Каталог", n_cart: "Корзина", n_more: "Ещё",
-      avail: "Доступные товары", loc_title: "Локация",
-      addr: "г. Самарканд, ул. Козизода Румий, дом 56 А", hours: "08:00 – 24:00 (ежедневно)",
-      m_prof: "🪪 Мой QR-код и Профиль", m_favs: "♡ Избранное", m_loc: "📍 Локация", m_news: "📰 Новости"
-    }
-  };
-
   let allProducts = [];
   let allNews = [];
-  let selectedCat = "Барчаси";
+  let currentSort = "default";
+  let selectedBrand = "ALL";
   let cart = JSON.parse(localStorage.getItem("vitora_cart") || "[]");
   let likes = JSON.parse(localStorage.getItem("vitora_likes") || "[]");
   let userProfile = { bonus: 2000, total_spent: 0, tier: "🥉 Бронза", cashback_pct: 1 };
@@ -218,39 +265,17 @@
   const userCardId = user ? "VTR-" + (user.id || 1).toString(16).toUpperCase().padStart(8, "0").slice(0,8) : "VTR-000001";
   if (user) document.getElementById("inpName").value = user.first_name || "";
 
-  function applyLangUI() {
-    const t = I18N[lang] || I18N.cyr;
-    document.getElementById("searchInput").placeholder = t.search;
-    document.getElementById("n_home").textContent = t.n_home;
-    document.getElementById("n_cat").textContent = t.n_cat;
-    document.getElementById("n_cart").textContent = t.n_cart;
-    document.getElementById("n_more").textContent = t.n_more;
-    document.getElementById("t_avail_title").textContent = t.avail;
-    document.getElementById("m_prof").textContent = t.m_prof;
-    document.getElementById("m_favs").textContent = t.m_favs;
-    document.getElementById("m_loc").textContent = t.m_loc;
-    document.getElementById("m_news").textContent = t.m_news;
-
-    const hr = new Date().getHours();
-    const greet = lang === "ru" ? (hr < 12 ? "Доброе утро" : hr < 18 ? "Добрый день" : "Добрый вечер")
-                : lang === "lat" ? (hr < 12 ? "Xayrli tong" : hr < 18 ? "Xayrli kun" : "Xayrli kech")
-                : (hr < 12 ? "Хайрли тонг" : hr < 18 ? "Хайрли кун" : "Хайрли кеч");
-    document.getElementById("greetingText").textContent = `${greet}${user && user.first_name ? ', ' + user.first_name : ''}! 👋`;
-  }
-
   function getCartQty(id) {
     const f = cart.find(x => x.id === id);
     return f ? f.qty : 0;
   }
 
-  /* QOLDIQDAN ORTIQ BOSISHNI BLOKLASH VA 15 DAQIQA BRON QILISH */
   async function changeCardQty(id, delta, ev) {
     if (ev) ev.stopPropagation();
     const p = allProducts.find(x => x.id === id);
     if (!p) return;
     const maxAvail = p.available_stock !== undefined ? p.available_stock : p.stock;
-    const curQty = getCartQty(id);
-    const targetQty = curQty + delta;
+    const targetQty = getCartQty(id) + delta;
 
     if (delta > 0 && targetQty > maxAvail) {
       showToast(`⚠️ Дўконда жами ${maxAvail} дона бор!`);
@@ -278,51 +303,102 @@
       updateCartBadge();
       renderHome();
       renderCatalog();
-      if (delta > 0 && allowed < targetQty) showToast(`⚠️ Максимум ${allowed} дона мавжуд!`);
-    } catch (e) {
-      showToast("Хатолик!");
+    } catch (e) {}
+  }
+
+  /* KARTANI BOSGANDA AVVAL BITTA KATTALASHIB (POP-ZOOM) KEYIN ICHIGA KIRISH */
+  function popAndOpenDetail(id, cardEl) {
+    if (cardEl) {
+      cardEl.classList.add("pop-zoom");
+      setTimeout(() => {
+        cardEl.classList.remove("pop-zoom");
+        openDetail(id);
+      }, 210);
+    } else {
+      openDetail(id);
     }
   }
 
-  function productCardHtml(p) {
-    const t = I18N[lang] || I18N.cyr;
+  function productCardHtml(p, idx = 0) {
     const liked = likes.includes(p.id);
     const inCartQty = getCartQty(p.id);
     const avail = p.available_stock !== undefined ? p.available_stock : p.stock;
-    const thumb = p.image ? `<img src="${p.image}" alt="" />` : `<div style="font-size:38px;">💊</div>`;
+    const thumb = p.image ? `<img src="${p.image}" alt="" />` : `<div style="font-size:40px;">💊</div>`;
+    const delay = Math.min(idx * 0.05, 0.4);
 
     const actionHtml = inCartQty > 0
       ? `<div class="card-qty-bar" onclick="event.stopPropagation()">
            <button onclick="changeCardQty(${p.id}, -1, event)">−</button>
-           <span>+${inCartQty}</span>
+           <span style="font-weight:800;">+${inCartQty}</span>
            <button onclick="changeCardQty(${p.id}, 1, event)">+</button>
          </div>`
-      : `<button class="card-cart-btn" onclick="changeCardQty(${p.id}, 1, event)">${t.add}</button>`;
+      : `<button class="card-cart-btn" onclick="changeCardQty(${p.id}, 1, event)">Саватга</button>`;
 
     return `
-      <div class="p-card" onclick="openDetail(${p.id})">
+      <div class="p-card" style="animation-delay:${delay}s" onclick="popAndOpenDetail(${p.id}, this)">
         <div>
-          <div class="p-thumb" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe)">
-            <span class="p-id-badge">${p.id}</span>
+          <div class="p-thumb">
+            <span class="p-brand-tag">${p.brand || 'Vitora'}</span>
             ${p.discount_pct ? `<span class="disc-badge">-${p.discount_pct}%</span>` : ''}
             <button class="like-btn ${liked ? 'liked' : ''}" onclick="toggleLike(${p.id}, event)">${liked ? '❤️' : '♡'}</button>
             ${thumb}
           </div>
           <div class="p-name">${p.name}</div>
-          <div class="p-sub">${p.category || 'БАДы'}</div>
+          <div class="p-meta-row">
+            <span>⭐ ${Number(p.rating_avg || 5).toFixed(1)}</span>
+            <span style="color:#94a3b8;">Сотилган: ${p.sold_count || 0}</span>
+          </div>
         </div>
         <div>
           ${p.old_price > p.price ? `<div class="p-old-price">${Number(p.old_price).toLocaleString()} сўм</div>` : ''}
           <div class="p-price">${Number(p.price || 0).toLocaleString()} сўм</div>
-          <div class="p-stock">${t.stock}: ${avail} ${t.pcs}</div>
+          <div class="p-stock">Қолдиқ: ${avail} дона</div>
           ${actionHtml}
         </div>
       </div>
     `;
   }
 
+  function getFilteredProducts() {
+    const q = document.getElementById("searchInput").value.trim().toLowerCase();
+    let list = allProducts.filter(p => {
+      const matchQ = !q || (p.name || "").toLowerCase().includes(q) || (p.brand || "").toLowerCase().includes(q) || (p.category || "").toLowerCase().includes(q);
+      const matchB = selectedBrand === "ALL" || (p.brand || "Vitora") === selectedBrand;
+      return matchQ && matchB;
+    });
+
+    if (currentSort === "cheap") list.sort((a, b) => a.price - b.price);
+    else if (currentSort === "expensive") list.sort((a, b) => b.price - a.price);
+    else if (currentSort === "rating") list.sort((a, b) => (b.rating_avg || 5) - (a.rating_avg || 5));
+    else if (currentSort === "discount") list = list.filter(x => (x.discount_pct || 0) > 0);
+    return list;
+  }
+
+  function setSort(s, el) {
+    currentSort = s;
+    document.querySelectorAll("#filterBar .f-chip").forEach(c => c.classList.remove("active"));
+    if (el) el.classList.add("active");
+    renderHome();
+    renderCatalog();
+  }
+
+  function setBrand(b) {
+    selectedBrand = b;
+    renderCatalog();
+  }
+
+  function renderBrandChips() {
+    const brands = ["ALL", ...new Set(allProducts.map(p => p.brand || "Vitora"))];
+    document.getElementById("brandChips").innerHTML = brands.map(b =>
+      `<button class="f-chip ${selectedBrand === b ? 'active' : ''}" onclick="setBrand('${b}')">${b === 'ALL' ? '🏷 Барча фирмалар' : b}</button>`
+    ).join("");
+  }
+
   async function loadProducts() {
-    applyLangUI();
+    const hr = new Date().getHours();
+    const greet = hr < 12 ? "Хайрли тонг" : hr < 18 ? "Хайрли кун" : "Хайрли кеч";
+    document.getElementById("greetingText").textContent = `${greet}${user && user.first_name ? ', ' + user.first_name : ''}! 👋`;
+
     try {
       const res = await fetch(`${API_BASE}/api/products`);
       const data = await res.json();
@@ -333,9 +409,9 @@
       if (user && user.id) {
         const ures = await fetch(`${API_BASE}/api/user/${user.id}`);
         userProfile = await ures.json();
-        if (!urlParams.get("lang") && userProfile.lang) { lang = userProfile.lang; applyLangUI(); }
         document.getElementById("headerTierBadge").textContent = `${userProfile.tier} · ${userProfile.cashback_pct}%`;
       }
+      renderBrandChips();
       renderHome();
       renderCatalog();
       updateCartBadge();
@@ -343,15 +419,16 @@
   }
 
   function renderHome() {
-    document.getElementById("homePopularGrid").innerHTML = allProducts.length
-      ? allProducts.slice(0, 16).map(productCardHtml).join("")
-      : "<p style='color:#94a3b8;grid-column:span 2;'>Ҳозирча маҳсулотлар йўқ.</p>";
+    const list = getFilteredProducts();
+    document.getElementById("homePopularGrid").innerHTML = list.length
+      ? list.slice(0, 16).map((p, i) => productCardHtml(p, i)).join("")
+      : "<p style='color:#94a3b8;grid-column:span 2;'>Маҳсулот топилмади.</p>";
   }
 
   function renderCatalog() {
-    const q = document.getElementById("searchInput").value.trim().toLowerCase();
-    const list = allProducts.filter(p => !q || (p.name || "").toLowerCase().includes(q));
-    document.getElementById("catalogGrid").innerHTML = list.map(productCardHtml).join("");
+    renderBrandChips();
+    const list = getFilteredProducts();
+    document.getElementById("catalogGrid").innerHTML = list.map((p, i) => productCardHtml(p, i)).join("");
   }
 
   function onSearchInput() {
@@ -368,58 +445,119 @@
     renderCatalog();
   }
 
+  async function rateProduct(pid, stars) {
+    try {
+      const res = await fetch(`${API_BASE}/api/rate_product`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ product_id: pid, stars })
+      });
+      const d = await res.json();
+      if (d.ok) {
+        const p = allProducts.find(x => x.id === pid);
+        if (p) { p.rating_avg = d.rating_avg; p.rating_cnt = d.rating_cnt; }
+        showToast(`⭐ ${stars} юлдуз баҳоингиз сақланди!`);
+        openDetail(pid);
+      }
+    } catch (e) {}
+  }
+
+  /* BOY VA AQLLI TOVAR ICHKI SAHIFASI + O'XSHASH VA QIZIQARLI TOVARLAR */
   function openDetail(id) {
     const p = allProducts.find(x => x.id === id);
     if (!p) return;
+    const similar = allProducts.filter(x => x.id !== p.id && (x.category === p.category || x.brand === p.brand)).slice(0, 4);
+    const interesting = allProducts.filter(x => x.id !== p.id && !similar.some(s => s.id === x.id)).slice(0, 4);
+
     document.getElementById("fmTopTitle").textContent = p.name;
     document.getElementById("modalBody").innerHTML = `
       <div style="padding:16px;">
-        ${p.image ? `<img src="${p.image}" style="width:100%;max-height:220px;object-fit:contain;background:#fff;border-radius:14px;margin-bottom:12px;" />` : ''}
-        <div style="font-size:20px;font-weight:800;margin-bottom:8px;">${p.name}</div>
-        <div style="font-size:22px;font-weight:800;color:var(--green);margin-bottom:12px;">${Number(p.price).toLocaleString()} сўм</div>
-        <div class="dm-box">
-          <div class="dm-kv"><span class="dm-k">Ичиш тартиби</span><span class="dm-v">${p.dosage || 'Шифокор тавсиясига кўра'}</span></div>
-          <div class="dm-kv"><span class="dm-k">Қолдиқ</span><span class="dm-v">${p.available_stock} дона</span></div>
+        ${p.image ? `<img src="${p.image}" style="width:100%;max-height:230px;object-fit:contain;background:#fff;border-radius:16px;margin-bottom:14px;padding:8px;" />` : ''}
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="background:rgba(37,99,235,0.2);color:#93c5fd;padding:3px 10px;border-radius:10px;font-size:12px;font-weight:700;">🏷 ${p.brand || 'Vitora'}</span>
+          <span style="color:#fbbf24;font-weight:800;font-size:13px;">⭐ ${Number(p.rating_avg || 5).toFixed(1)} (${p.rating_cnt || 1} баҳо)</span>
         </div>
+        <div style="font-size:20px;font-weight:800;margin-bottom:6px;">${p.name}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <div style="font-size:22px;font-weight:800;color:var(--green);">${Number(p.price).toLocaleString()} сўм</div>
+          <div style="font-size:12px;color:#cbd5e1;">📦 Қолган: <b>${p.available_stock}</b> | 🔥 Сотилган: <b>${p.sold_count || 0}</b></div>
+        </div>
+
+        <div class="info-card">
+          <h4>🧬 Таснифи ва Таркиби</h4>
+          <p>${p.description || p.name + ' — сифатли биологик фаол қўшимча.'}</p>
+        </div>
+
+        <div class="info-card">
+          <h4>📋 Ичиш тартиби (Қўлланилиши)</h4>
+          <p>${p.dosage || 'Кунига 1–2 маҳал овқат вақтида сув билан.'}</p>
+        </div>
+
+        <div class="info-card">
+          <h4>✨ Нимага фойдали?</h4>
+          <p>${p.benefits || 'Иммунитетни мустаҳкамлайди, умумий қувват ва тонусни оширади.'}</p>
+        </div>
+
+        <div class="info-card">
+          <h4>⚠️ Нимага эътиборли бўлиш керак?</h4>
+          <p>${p.warnings || 'Шахсий таъсирчанлик бўлса шифокор билан маслаҳатлашинг.'}</p>
+        </div>
+
+        <div class="info-card">
+          <h4>🔗 Бу билан қўшиб ичиладиган дорилар</h4>
+          <p>${p.combine_with || 'Витамин D3, Омега-3, Магний'}</p>
+        </div>
+
+        <div class="info-card">
+          <h4>⭐ Маҳсулотни баҳоланг (1 дан 5 юлдузгача)</h4>
+          <div class="star-bar">
+            ${[1,2,3,4,5].map(s => `<button class="star-btn" onclick="rateProduct(${p.id}, ${s})">⭐ ${s}</button>`).join("")}
+          </div>
+        </div>
+
         <button class="submit-btn" onclick="changeCardQty(${p.id}, 1); closeModal();">🛍 Саватга қўшиш</button>
+
+        ${similar.length ? `<div style="font-size:16px;font-weight:800;margin:20px 0 10px;">🔄 Ўхшаш товарлар</div><div class="grid">${similar.map((x,i) => productCardHtml(x,i)).join("")}</div>` : ''}
+        ${interesting.length ? `<div style="font-size:16px;font-weight:800;margin:20px 0 10px;">✨ Сизга қизиқ бўлиши мумкин</div><div class="grid">${interesting.map((x,i) => productCardHtml(x,i)).join("")}</div>` : ''}
       </div>
     `;
     document.getElementById("fullModal").classList.add("open");
   }
 
+  /* MARKAZIY QR KOD VA BONUS OYNASI */
+  function openQrModal() {
+    document.getElementById("fmTopTitle").textContent = "Шахсий QR-код & Бонус";
+    const qr = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${userCardId}`;
+    document.getElementById("modalBody").innerHTML = `
+      <div style="padding:18px;text-align:center;">
+        <div class="info-card" style="background:linear-gradient(180deg,#172554,#0f172a);border-color:#3b82f6;">
+          <div style="font-size:12px;color:#93c5fd;margin-bottom:8px;">VITORA | SMART PHARM LOYALTY</div>
+          <div style="background:#fff;padding:12px;border-radius:16px;display:inline-block;margin-bottom:10px;">
+            <img src="${qr}" style="display:block;width:210px;height:210px;" />
+          </div>
+          <div style="font-size:20px;font-weight:800;letter-spacing:1.5px;margin-bottom:4px;">${userCardId}</div>
+          <div style="font-size:12px;color:#cbd5e1;margin-bottom:14px;">Кассада ушбу QR-кодни кўрсатинг</div>
+          <div style="display:flex;justify-content:space-around;background:rgba(255,255,255,0.06);padding:12px;border-radius:12px;">
+            <div><div style="font-size:11px;color:#94a3b8;">Бонус баланс</div><div style="font-size:16px;font-weight:800;color:#10b981;">${Number(userProfile.bonus).toLocaleString()} сўм</div></div>
+            <div><div style="font-size:11px;color:#94a3b8;">Даражангиз</div><div style="font-size:15px;font-weight:800;">${userProfile.tier} (${userProfile.cashback_pct}%)</div></div>
+          </div>
+        </div>
+      </div>`;
+    document.getElementById("fullModal").classList.add("open");
+  }
+
   function openMoreSub(key) {
-    const t = I18N[lang] || I18N.cyr;
     const body = document.getElementById("modalBody");
-    if (key === "profile") {
-      document.getElementById("fmTopTitle").textContent = "QR-код & Профил";
-      const qr = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${userCardId}`;
-      body.innerHTML = `
-        <div style="padding:16px;text-align:center;">
-          <div class="dm-box">
-            <img src="${qr}" style="border-radius:12px;margin:8px auto 12px;display:block;" />
-            <div style="font-size:18px;font-weight:800;letter-spacing:1px;margin-bottom:6px;">${userCardId}</div>
-            <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Дорихонага келганингизда шу QR-кодни кўрсатинг</div>
-            <div class="dm-kv"><span class="dm-k">Бонус баланс</span><span class="dm-v" style="color:var(--green)">${Number(userProfile.bonus).toLocaleString()} сўм</span></div>
-            <div class="dm-kv"><span class="dm-k">Даража</span><span class="dm-v">${userProfile.tier} (${userProfile.cashback_pct}%)</span></div>
-          </div>
-        </div>`;
-    } else if (key === "loc") {
-      document.getElementById("fmTopTitle").textContent = t.loc_title;
-      body.innerHTML = `
-        <div style="padding:16px;">
-          <div class="dm-box">
-            <div style="font-size:16px;font-weight:800;margin-bottom:8px;">🏥 Vitora | Smart Pharm</div>
-            <div class="dm-kv"><span class="dm-k">Манзил</span><span class="dm-v">${t.addr}</span></div>
-            <div class="dm-kv"><span class="dm-k">Иш вақти</span><span class="dm-v">${t.hours}</span></div>
-          </div>
-        </div>`;
+    if (key === "loc") {
+      document.getElementById("fmTopTitle").textContent = "📍 Жойлашув";
+      body.innerHTML = `<div style="padding:16px;"><div class="info-card"><h4>🏥 Vitora | Smart Pharm</h4><p>📍 Манзил: Самарқанд шаҳар, Қозизода Румий 56 А уй<br>🕒 Иш вақти: 08:00 – 24:00 (ҳар куни)</p></div></div>`;
     } else if (key === "favs") {
-      document.getElementById("fmTopTitle").textContent = t.m_favs;
+      document.getElementById("fmTopTitle").textContent = "♡ Севимлилар";
       const favs = allProducts.filter(p => likes.includes(p.id));
-      body.innerHTML = `<div style="padding:14px;"><div class="grid">${favs.map(productCardHtml).join("")}</div></div>`;
+      body.innerHTML = `<div style="padding:14px;"><div class="grid">${favs.map((p,i) => productCardHtml(p,i)).join("")}</div></div>`;
     } else if (key === "news") {
-      document.getElementById("fmTopTitle").textContent = t.m_news;
-      body.innerHTML = `<div style="padding:14px;">${allNews.map(n => `<div class="dm-box">${n.image ? `<img src="${n.image}" style="width:100%;border-radius:10px;margin-bottom:8px;"/>` : ''}${n.body}</div>`).join("")}</div>`;
+      document.getElementById("fmTopTitle").textContent = "📰 Янгиликлар";
+      body.innerHTML = `<div style="padding:14px;">${allNews.map(n => `<div class="info-card">${n.image ? `<img src="${n.image}" style="width:100%;border-radius:10px;margin-bottom:8px;"/>` : ''}<p>${n.body}</p></div>`).join("")}</div>`;
     }
     document.getElementById("fullModal").classList.add("open");
   }
@@ -446,7 +584,8 @@
     document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
     document.getElementById("topHeader").style.display = (tab === "home" || tab === "cat") ? "block" : "none";
     document.getElementById(`sec-${tab}`).classList.add("active");
-    document.getElementById(`nav-${tab}`).classList.add("active");
+    const navEl = document.getElementById(`nav-${tab}`);
+    if (navEl) navEl.classList.add("active");
     if (tab === "cart") renderCart();
   }
 
@@ -454,12 +593,16 @@
     const list = document.getElementById("cartList");
     const totalBox = document.getElementById("cartTotalBox");
     const form = document.getElementById("orderForm");
+    const bBox = document.getElementById("bonusToggleBox");
+
     if (!cart.length) {
       list.innerHTML = "<p style='color:#94a3b8'>Саватча бўш.</p>";
       totalBox.textContent = "";
       form.style.display = "none";
+      bBox.style.display = "none";
       return;
     }
+
     let total = 0;
     list.innerHTML = cart.map(item => {
       total += item.price * item.qty;
@@ -472,12 +615,23 @@
           <div style="display:flex;align-items:center;gap:6px;">
             <button onclick="changeCardQty(${item.id}, -1); renderCart();" style="background:#1e293b;color:#fff;border:none;border-radius:7px;width:28px;height:28px;">−</button>
             <span style="font-weight:800;">+${item.qty}</span>
-            <button onclick="changeCardQty(${item.id}, 1); renderCart();" style="background:#1d8cf8;color:#fff;border:none;border-radius:7px;width:28px;height:28px;">+</button>
+            <button onclick="changeCardQty(${item.id}, 1); renderCart();" style="background:#2563eb;color:#fff;border:none;border-radius:7px;width:28px;height:28px;">+</button>
           </div>
-        </div>
-      `;
+        </div>`;
     }).join("");
-    totalBox.textContent = `Жами: ${total.toLocaleString()} сўм`;
+
+    if (userProfile.bonus > 0) {
+      bBox.style.display = "block";
+      const maxDisc = Math.min(userProfile.bonus, Math.floor(total * 0.3));
+      document.getElementById("bonusChkText").textContent = `🎁 Бонусни ишлатиш (-${maxDisc.toLocaleString()} сўм чегирма)`;
+    }
+    const useB = document.getElementById("chkUseBonus").checked;
+    const disc = useB ? Math.min(userProfile.bonus, Math.floor(total * 0.3)) : 0;
+    const finalSum = Math.max(0, total - disc);
+
+    totalBox.innerHTML = disc > 0
+      ? `Жами: <s>${total.toLocaleString()}</s> → <span style="color:var(--green)">${finalSum.toLocaleString()} сўм</span>`
+      : `Жами: ${total.toLocaleString()} сўм`;
     form.style.display = "block";
     toggleCardBox();
   }
@@ -515,6 +669,7 @@
         delivery_type: document.getElementById("inpDelivery").value,
         address: document.getElementById("inpAddress").value.trim(),
         payment_method: document.getElementById("inpPayment").value,
+        use_bonus: document.getElementById("chkUseBonus").checked,
         items: itemsText, total, cart
       })
     });
