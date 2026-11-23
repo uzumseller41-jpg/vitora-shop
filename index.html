@@ -19,8 +19,11 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text); padding-bottom: 84px; -webkit-tap-highlight-color: transparent; }
 
-    /* HEADER & SEARCH */
-    .header { padding: 12px 16px 8px; position: sticky; top: 0; background: rgba(11,17,32,0.95); backdrop-filter: blur(8px); z-index: 20; }
+    /* HEADER & GREETING */
+    .header { padding: 12px 16px 8px; position: sticky; top: 0; background: rgba(11,17,32,0.96); backdrop-filter: blur(8px); z-index: 20; }
+    .greet-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .greet-txt { font-size: 16px; font-weight: 800; }
+    .greet-tier { font-size: 11px; background: rgba(16,185,129,0.16); color: #6ee7b7; padding: 4px 9px; border-radius: 12px; font-weight: 700; }
     .search-box {
       display: flex; align-items: center; gap: 8px;
       background: var(--card); border: 1px solid var(--border);
@@ -45,22 +48,21 @@
     .sec-title { font-size: 18px; font-weight: 700; }
     .sec-link { font-size: 13px; color: var(--accent); font-weight: 600; cursor: pointer; }
 
-    /* COLLECTION BANNER */
+    /* SEASON & INDIVIDUAL BANNER */
     .promo-banner {
       background: linear-gradient(135deg, #2563eb, #4f46e5);
       border-radius: 16px; padding: 16px; margin-bottom: 18px; cursor: pointer;
     }
     .promo-tag { font-size: 12px; color: #c7d2fe; margin-bottom: 4px; }
-    .promo-title { font-size: 19px; font-weight: 800; margin-bottom: 6px; }
+    .promo-title { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
     .promo-sub { font-size: 13px; color: #e0e7ff; line-height: 1.35; }
 
-    /* CATEGORY CARDS GRID (2 COLUMNS) */
+    /* CATEGORY CARDS GRID */
     .cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
     .cat-tile {
       background: var(--card); border: 1px solid var(--border); border-radius: 14px;
       padding: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer;
     }
-    .cat-tile:active { transform: scale(0.98); }
     .cat-ico {
       width: 38px; height: 38px; border-radius: 10px; background: rgba(29,140,248,0.14);
       display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0;
@@ -85,8 +87,12 @@
     }
     .p-thumb img { width: 100%; height: 100%; object-fit: cover; }
     .p-id-badge {
-      position: absolute; top: 6px; left: 6px; background: rgba(11,17,32,0.75);
+      position: absolute; top: 6px; left: 6px; background: rgba(11,17,32,0.78);
       color: #fff; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px;
+    }
+    .disc-badge {
+      position: absolute; bottom: 6px; left: 6px; background: #ef4444;
+      color: #fff; font-size: 11px; font-weight: 800; padding: 2px 7px; border-radius: 8px;
     }
     .like-btn {
       position: absolute; top: 6px; right: 6px; width: 30px; height: 30px;
@@ -102,14 +108,24 @@
       display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
     }
     .p-sub { font-size: 11px; color: var(--muted); margin-bottom: 6px; line-height: 1.25; }
+    .p-old-price { font-size: 11.5px; color: #94a3b8; text-decoration: line-through; }
     .p-price { font-size: 15px; font-weight: 800; margin-bottom: 2px; }
-    .p-unit { font-size: 11px; color: var(--muted); margin-bottom: 3px; }
     .p-stock { font-size: 11.5px; color: var(--green); font-weight: 600; margin-bottom: 8px; }
     .card-cart-btn {
-      width: 100%; padding: 9px; border-radius: 10px; border: none;
+      width: 100%; height: 36px; border-radius: 10px; border: none;
       background: var(--accent); color: #fff; font-size: 13.5px; font-weight: 700;
       cursor: pointer; margin-top: auto;
     }
+    .card-qty-bar {
+      width: 100%; height: 36px; border-radius: 10px; background: var(--card2);
+      border: 1px solid var(--accent); display: flex; align-items: center;
+      justify-content: space-between; padding: 0 8px; margin-top: auto;
+    }
+    .card-qty-bar button {
+      background: var(--accent); color: #fff; border: none; width: 26px; height: 26px;
+      border-radius: 7px; font-size: 16px; font-weight: 800; cursor: pointer;
+    }
+    .card-qty-bar span { font-size: 14px; font-weight: 800; color: #fff; }
 
     /* FULL SCREEN SUB-PAGES & PRODUCT DETAIL MODAL */
     .full-modal {
@@ -134,10 +150,9 @@
     .dm-body { padding: 0 16px; }
     .dm-title { font-size: 20px; font-weight: 800; line-height: 1.25; margin-bottom: 6px; }
     .dm-sub { font-size: 13px; color: var(--muted); line-height: 1.4; margin-bottom: 14px; }
-    .dm-price-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
-    .dm-price { font-size: 26px; font-weight: 800; }
+    .dm-price-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .dm-price { font-size: 25px; font-weight: 800; }
     .dm-avail { color: var(--green); font-size: 14px; font-weight: 700; }
-    .dm-unit-note { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
 
     .dm-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
     .dm-pill { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
@@ -183,7 +198,7 @@
     }
     .rel-thumb {
       height: 86px; border-radius: 10px; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; margin-bottom: 6px; overflow: hidden; position: relative;
+      align-items: center; justify-content: center; margin-bottom: 6px; overflow: hidden;
     }
     .rel-thumb img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -197,7 +212,6 @@
       padding: 15px 16px; cursor: pointer; font-size: 15px; font-weight: 500;
     }
     .more-row:not(:last-child) { border-bottom: 1px solid var(--border); }
-    .more-row:active { background: var(--card2); }
     .more-left { display: flex; align-items: center; gap: 12px; }
     .more-ico { color: var(--accent); font-size: 18px; width: 22px; text-align: center; }
 
@@ -245,8 +259,12 @@
 
 <div class="toast" id="toast">Бажарилди!</div>
 
-<!-- SEARCH BAR -->
+<!-- HEADER + GREETING + SEARCH -->
 <div class="header" id="topHeader">
+  <div class="greet-bar">
+    <div class="greet-txt" id="greetingText">Хайрли кун!</div>
+    <div class="greet-tier" id="headerTierBadge">🥉 Бронза · 3%</div>
+  </div>
   <div class="search-box">
     <span>🔍</span>
     <input type="text" id="searchInput" placeholder="Дори ёки БАД номини излаш..." oninput="onSearchInput()" />
@@ -256,10 +274,17 @@
 
 <!-- 1. АСОСИЙ (HOME) -->
 <div class="section active" id="sec-home">
-  <div class="promo-banner" onclick="openCollection('Кузда иммунитет ва қувват учун')">
-    <div class="promo-tag">Танлов · Махсус тўплам</div>
-    <div class="promo-title">⚡ Кузда иммунитет ва қувват учун</div>
-    <div class="promo-sub">Куч, иммунитет ва кунлик фаолликни қўллаб-қувватлаш учун сараланган БАДлар →</div>
+  <div class="promo-banner" id="seasonBanner" onclick="openSeasonCollection()">
+    <div class="promo-tag" id="seasonTag">Мавсумий танлов · Сиз учун</div>
+    <div class="promo-title" id="seasonTitle">❄️ Куз-Қиш мавсуми: Иммунитет ва Қувват</div>
+    <div class="promo-sub" id="seasonSub">Мавсумга мос сараланган витаминлар ва табиий воситалар →</div>
+  </div>
+
+  <div id="forYouBlock" style="display:none; margin-bottom:18px;">
+    <div class="sec-head">
+      <div class="sec-title">🎯 Сиз учун индивидуал тавсия</div>
+    </div>
+    <div class="grid" id="forYouGrid"></div>
   </div>
 
   <div class="sec-head">
@@ -269,7 +294,7 @@
   <div class="cat-grid" id="homeCatGrid"></div>
 
   <div class="sec-head">
-    <div class="sec-title">Оммабоп маҳсулотлар</div>
+    <div class="sec-title">Мавжуд маҳсулотлар</div>
     <div class="sec-link" onclick="switchTab('cat')">Ҳаммаси →</div>
   </div>
   <div class="grid" id="homePopularGrid"></div>
@@ -301,7 +326,7 @@
     <div class="form-group">
       <label>Олиб кетиш усули</label>
       <select id="inpDelivery" onchange="toggleAddress()">
-        <option value="Дорихонадан олиб кетиш">🏥 Дорихонадан олиб кетиш</option>
+        <option value="Дорихонадан олиб кетиш">🏥 Дорихонадан олиб кетиш (Қозизода Румий 56 А)</option>
         <option value="Курьер орқали етказиб бериш">🚚 Курьер орқали етказиб бериш</option>
       </select>
     </div>
@@ -334,7 +359,7 @@
       <span style="color:var(--muted)">›</span>
     </div>
     <div class="more-row" onclick="openMoreSub('news')">
-      <div class="more-left"><span class="more-ico">📰</span><span>Янгиликлар</span></div>
+      <div class="more-left"><span class="more-ico">📰</span><span>Янгиликлар <span id="newsCountBadge" style="color:var(--accent);font-size:13px;"></span></span></div>
       <span style="color:var(--muted)">›</span>
     </div>
     <div class="more-row" onclick="openMoreSub('support')">
@@ -356,7 +381,7 @@
   </div>
 </div>
 
-<!-- FULL MODAL (PRODUCT DETAIL / SIMILAR / SUB-PAGES) -->
+<!-- FULL MODAL -->
 <div class="full-modal" id="fullModal">
   <div class="fm-topbar">
     <button class="fm-back" onclick="closeModal()">← Back</button>
@@ -389,9 +414,12 @@
   if (tg) { tg.expand(); tg.ready(); }
 
   let allProducts = [];
+  let allNews = [];
   let selectedCat = "Барчаси";
   let cart = JSON.parse(localStorage.getItem("vitora_cart") || "[]");
   let likes = JSON.parse(localStorage.getItem("vitora_likes") || "[]");
+  let searchHistory = JSON.parse(localStorage.getItem("vitora_searches") || "[]");
+  let userProfile = { bonus: 5000, total_spent: 0, tier: "🥉 Бронза", cashback_pct: 3 };
   let detailQty = 1;
 
   const user = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
@@ -400,9 +428,33 @@
     document.getElementById("inpName").value = user.first_name || "";
   }
 
-  function isLiked(id) {
-    return likes.includes(id);
+  /* VAQTGA QARAB SALOMLASHISH VA MAVSUM */
+  function initGreetingAndSeason() {
+    const hr = new Date().getHours();
+    const fname = user && user.first_name ? `, ${user.first_name}` : "";
+    let greet = "Хайрли кун";
+    if (hr >= 5 && hr < 12) greet = "Хайрли тонг";
+    else if (hr >= 12 && hr < 18) greet = "Хайрли кун";
+    else greet = "Хайрли кеч";
+    document.getElementById("greetingText").textContent = `${greet}${fname}! 👋`;
+
+    const m = new Date().getMonth() + 1;
+    if (m === 12 || m === 1 || m === 2) {
+      document.getElementById("seasonTitle").textContent = "❄️ Қишки мавсум: Грипп ва шамоллашдан ҳимоя";
+      document.getElementById("seasonSub").textContent = "Витамин D3, С, Цинк ва иммунитетни кучайтирувчи мажмуалар →";
+    } else if (m >= 3 && m <= 5) {
+      document.getElementById("seasonTitle").textContent = "🌸 Баҳорги авитаминозга қарши тўплам";
+      document.getElementById("seasonSub").textContent = "Қувват, тетиклик ва гўзаллик учун мультивитаминлар →";
+    } else if (m >= 6 && m <= 8) {
+      document.getElementById("seasonTitle").textContent = "☀️ Ёзги фаоллик ва юрак-қон томир ҳимояси";
+      document.getElementById("seasonSub").textContent = "Омега-3, Магний ва минераллар баланси →";
+    } else {
+      document.getElementById("seasonTitle").textContent = "🍂 Кузги иммунитет ва қувват учун";
+      document.getElementById("seasonSub").textContent = "Мавсумга мос сараланган витаминлар ва БАДлар →";
+    }
   }
+
+  function isLiked(id) { return likes.includes(id); }
 
   function toggleLike(id, ev) {
     if (ev) ev.stopPropagation();
@@ -415,13 +467,43 @@
     }
     localStorage.setItem("vitora_likes", JSON.stringify(likes));
     updateFavBadge();
-    renderHome();
-    renderCatalog();
+    renderAllViews();
   }
 
   function updateFavBadge() {
     const el = document.getElementById("favCountBadge");
     if (el) el.textContent = likes.length ? `(${likes.length})` : "";
+  }
+
+  function getCartQty(id) {
+    const f = cart.find(x => x.id === id);
+    return f ? f.qty : 0;
+  }
+
+  function changeCardQty(id, delta, ev) {
+    if (ev) ev.stopPropagation();
+    const p = allProducts.find(x => x.id === id);
+    if (!p) return;
+    const idx = cart.findIndex(x => x.id === id);
+    if (idx === -1 && delta > 0) {
+      cart.push({ id: p.id, name: p.name, price: p.price, qty: 1 });
+      showToast("✅ Саватга қўшилди (+1)");
+    } else if (idx !== -1) {
+      cart[idx].qty += delta;
+      if (cart[idx].qty <= 0) {
+        cart.splice(idx, 1);
+      } else if (delta > 0) {
+        showToast(`✅ +1 (жами: ${cart[idx].qty} дона)`);
+      }
+    }
+    localStorage.setItem("vitora_cart", JSON.stringify(cart));
+    updateCartBadge();
+    renderAllViews();
+  }
+
+  function renderAllViews() {
+    renderHome();
+    renderCatalog();
   }
 
   function getVisualStyle(p) {
@@ -441,24 +523,28 @@
     return { bg: "linear-gradient(135deg,#dbeafe,#bfdbfe)", emoji: "💊", label: "VITAMIN", pills: ["🛡 Кучли иммунитет", "⚡ Кунлик қувват", "🧬 Мувозанатли таркиб"] };
   }
 
-  function extractPackCount(name) {
-    const m = (name || "").match(/(?:№|N|х|\*)\s*(\d+)/i);
-    return m ? parseInt(m[1], 10) : null;
-  }
-
   function productCardHtml(p) {
     const st = getVisualStyle(p);
     const liked = isLiked(p.id);
-    const pack = extractPackCount(p.name);
-    const unitPrice = pack && p.price > 0 ? Math.round(p.price / pack) : null;
+    const inCartQty = getCartQty(p.id);
     const thumb = p.image
       ? `<img src="${p.image}" alt="" onerror="this.style.display='none'" />`
       : `<div class="p-emoji">${st.emoji}</div><div class="p-tag-txt">${st.label}</div>`;
+
+    const actionHtml = inCartQty > 0
+      ? `<div class="card-qty-bar" onclick="event.stopPropagation()">
+           <button onclick="changeCardQty(${p.id}, -1, event)">−</button>
+           <span>+${inCartQty}</span>
+           <button onclick="changeCardQty(${p.id}, 1, event)">+</button>
+         </div>`
+      : `<button class="card-cart-btn" onclick="changeCardQty(${p.id}, 1, event)">Саватга</button>`;
+
     return `
       <div class="p-card" onclick="openDetail(${p.id})">
         <div>
           <div class="p-thumb" style="background:${st.bg}">
             <span class="p-id-badge">${p.id}</span>
+            ${p.discount_pct ? `<span class="disc-badge">-${p.discount_pct}%</span>` : ''}
             <button class="like-btn ${liked ? 'liked' : ''}" onclick="toggleLike(${p.id}, event)">${liked ? '❤️' : '♡'}</button>
             ${thumb}
           </div>
@@ -466,21 +552,33 @@
           <div class="p-sub">${p.category || 'БАДы'}</div>
         </div>
         <div>
+          ${p.old_price > p.price ? `<div class="p-old-price">${Number(p.old_price).toLocaleString()} сўм</div>` : ''}
           <div class="p-price">${Number(p.price || 0).toLocaleString()} сўм</div>
-          ${unitPrice ? `<div class="p-unit">1 дона ≈ ${unitPrice.toLocaleString()} сўм</div>` : ''}
           <div class="p-stock">Бор · ${p.stock} дона</div>
-          <button class="card-cart-btn" onclick="event.stopPropagation(); addToCart(${p.id}, 1)">Саватга</button>
+          ${actionHtml}
         </div>
       </div>
     `;
   }
 
   async function loadProducts() {
+    initGreetingAndSeason();
     try {
       const res = await fetch(`${API_BASE}/api/products`);
       const data = await res.json();
       allProducts = data.products || [];
+      allNews = data.news || [];
+
+      if (user && user.id) {
+        const ures = await fetch(`${API_BASE}/api/user/${user.id}`);
+        userProfile = await ures.json();
+        document.getElementById("headerTierBadge").textContent = `${userProfile.tier} · ${userProfile.cashback_pct}%`;
+      }
+
       document.getElementById("totalCountLbl").textContent = `Барча маҳсулотлар · ${allProducts.length} та`;
+      const nb = document.getElementById("newsCountBadge");
+      if (nb && allNews.length) nb.textContent = `(${allNews.length})`;
+
       buildCategoryPills();
       renderHome();
       renderCatalog();
@@ -491,7 +589,43 @@
     }
   }
 
+  /* INDIVIDUAL TAVSIYA DORILAR */
+  function getIndividualRecommendations() {
+    if (!allProducts.length) return [];
+    const keywords = [...searchHistory];
+    likes.forEach(lid => {
+      const lp = allProducts.find(x => x.id === lid);
+      if (lp) keywords.push(lp.category.toLowerCase(), lp.name.split(" ")[0].toLowerCase());
+    });
+
+    if (keywords.length) {
+      const matched = allProducts.filter(p =>
+        keywords.some(k => k.length > 2 && ((p.name || "").toLowerCase().includes(k) || (p.category || "").toLowerCase().includes(k)))
+      );
+      if (matched.length) return matched.slice(0, 4);
+    }
+    // Mavsumga qarab tavsiya
+    const seasonKeys = ["витамин", "иммун", "омега", "цинк", "магн", "фито"];
+    const seasonal = allProducts.filter(p =>
+      seasonKeys.some(k => ((p.name || "").toLowerCase().includes(k) || (p.category || "").toLowerCase().includes(k)))
+    );
+    return (seasonal.length ? seasonal : allProducts).slice(0, 4);
+  }
+
   function renderHome() {
+    if (!allProducts.length) {
+      document.getElementById("homeCatGrid").innerHTML = "";
+      document.getElementById("forYouBlock").style.display = "none";
+      document.getElementById("homePopularGrid").innerHTML = "<p style='color:#94a3b8;grid-column:span 2;'>Ҳозирча маҳсулотлар қўшилмаган. Тез орада янги дорилар жойланади!</p>";
+      return;
+    }
+
+    const recs = getIndividualRecommendations();
+    if (recs.length) {
+      document.getElementById("forYouBlock").style.display = "block";
+      document.getElementById("forYouGrid").innerHTML = recs.map(productCardHtml).join("");
+    }
+
     const counts = {};
     allProducts.forEach(p => {
       const c = p.category || "БАДы";
@@ -517,17 +651,17 @@
     switchTab("cat");
   }
 
-  function openCollection(title) {
-    document.getElementById("fmTopTitle").textContent = title;
-    const list = allProducts.slice(0, 24);
+  function openSeasonCollection() {
+    const title = document.getElementById("seasonTitle").textContent;
+    document.getElementById("fmTopTitle").textContent = "Мавсумий танлов";
+    const list = getIndividualRecommendations();
     document.getElementById("modalBody").innerHTML = `
       <div style="padding:12px 16px;">
         <div class="promo-banner" style="margin-bottom:14px;">
-          <div class="promo-tag">Танлов · ${list.length} та маҳсулот</div>
+          <div class="promo-tag">Сиз учун сараланган</div>
           <div class="promo-title">${title}</div>
-          <div class="promo-sub">Куч, иммунитет ва фаолликни қўллаб-қувватлаш учун сараланган маҳсулотлар.</div>
         </div>
-        <div class="grid">${list.map(productCardHtml).join("")}</div>
+        <div class="grid">${(list.length ? list : allProducts).map(productCardHtml).join("")}</div>
       </div>
     `;
     openModal();
@@ -548,7 +682,12 @@
   }
 
   function onSearchInput() {
-    const q = document.getElementById("searchInput").value.trim();
+    const q = document.getElementById("searchInput").value.trim().toLowerCase();
+    if (q.length >= 3 && !searchHistory.includes(q)) {
+      searchHistory.unshift(q);
+      searchHistory = searchHistory.slice(0, 8);
+      localStorage.setItem("vitora_searches", JSON.stringify(searchHistory));
+    }
     if (q && !document.getElementById("sec-cat").classList.contains("active")) {
       switchTab("cat");
     } else {
@@ -567,21 +706,19 @@
     document.getElementById("catalogGrid").innerHTML = list.map(productCardHtml).join("");
   }
 
-  /* PRODUCT DETAIL PAGE */
+  /* PRODUCT DETAIL */
   function openDetail(id) {
     const p = allProducts.find(x => x.id === id);
     if (!p) return;
-    detailQty = 1;
+    detailQty = Math.max(1, getCartQty(id));
     const st = getVisualStyle(p);
     const liked = isLiked(p.id);
-    const pack = extractPackCount(p.name);
-    const unitPrice = pack && p.price > 0 ? Math.round(p.price / pack) : null;
     const code = "VM-" + String(p.id).padStart(6, "0");
 
     document.getElementById("fmTopTitle").textContent = "";
     const hero = p.image
       ? `<img src="${p.image}" alt="" />`
-      : `<div style="font-size:64px;margin-bottom:6px;">${st.emoji}</div><div style="font-size:15px;font-weight:800;color:#1e293b;letter-spacing:1px;">${st.label}</div>`;
+      : `<div style="font-size:64px;margin-bottom:6px;">${st.emoji}</div><div style="font-size:15px;font-weight:800;color:#1e293b;">${st.label}</div>`;
 
     const related = allProducts.filter(x => x.id !== p.id && x.category === p.category).slice(0, 10);
     const relHtml = related.map(r => {
@@ -598,21 +735,21 @@
 
     document.getElementById("modalBody").innerHTML = `
       <div class="dm-hero" style="background:${st.bg}">
+        ${p.discount_pct ? `<span class="disc-badge" style="font-size:13px;padding:4px 10px;">-${p.discount_pct}% СКИДКА</span>` : ''}
         <button class="like-btn ${liked ? 'liked' : ''}" style="width:36px;height:36px;font-size:18px;" onclick="toggleDetailLike(${p.id}, this)">${liked ? '❤️' : '♡'}</button>
         ${hero}
       </div>
       <div class="dm-body">
         <div class="dm-title">${p.name}</div>
-        <div class="dm-sub">
-          ${p.description || p.category || 'БАДы'}<br/>
-          Тоифа: ${p.category || 'БАДы'}
-        </div>
+        <div class="dm-sub">Тоифа: ${p.category || 'БАДы'}</div>
 
         <div class="dm-price-row">
-          <div class="dm-price">${Number(p.price || 0).toLocaleString()} сўм</div>
+          <div>
+            ${p.old_price > p.price ? `<div class="p-old-price">${Number(p.old_price).toLocaleString()} сўм</div>` : ''}
+            <div class="dm-price">${Number(p.price || 0).toLocaleString()} сўм</div>
+          </div>
           <div class="dm-avail">Бор · ${p.stock} дона</div>
         </div>
-        ${unitPrice ? `<div class="dm-unit-note">1 дона ≈ ${unitPrice.toLocaleString()} сўм (қопламада × ${pack})</div>` : '<div style="margin-bottom:12px;"></div>'}
 
         <div class="dm-pills">
           <span class="dm-pill pill-pink">${st.pills[0]}</span>
@@ -621,20 +758,9 @@
         </div>
 
         <div class="dm-box">
-          ${pack ? `<div class="dm-kv"><span class="dm-k">Ўрам</span><span class="dm-v">× ${pack}</span></div>` : ''}
-          <div class="dm-kv">
-            <span class="dm-k">Сақлаш</span>
-            <span class="dm-v">Қуруқ жойда, хона ҳароратида сақланг.<br/>Юқори ва паст ҳарорат, намлик ва ёруғликдан сақланг.</span>
-          </div>
+          <div class="dm-kv"><span class="dm-k">Ичиш тартиби</span><span class="dm-v">${p.dosage || p.description || 'Шифокор тавсиясига кўра'}</span></div>
+          <div class="dm-kv"><span class="dm-k">Сақлаш</span><span class="dm-v">Қуруқ жойда, хона ҳароратида сақланг.</span></div>
           <div class="dm-kv"><span class="dm-k">Код</span><span class="dm-v">${code}</span></div>
-        </div>
-
-        <div class="dm-box">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-            <strong style="font-size:15px;">Таркиб ва маълумот</strong>
-            <span style="font-size:12px;color:var(--muted);">${p.category || 'БАД'}</span>
-          </div>
-          <div style="font-size:13px;color:var(--muted);line-height:1.4;">${p.description || p.name}</div>
         </div>
 
         <div class="dm-warn">
@@ -644,7 +770,7 @@
         <div class="dm-action-bar">
           <div class="qty-stepper">
             <button onclick="changeDetailQty(-1)">−</button>
-            <span id="dmQtyVal">1</span>
+            <span id="dmQtyVal">${detailQty}</span>
             <button onclick="changeDetailQty(1)">+</button>
           </div>
           <button class="dm-cart-btn" onclick="addFromDetail(${p.id})">Саватга</button>
@@ -653,7 +779,6 @@
         ${related.length ? `
           <div class="sec-head">
             <div class="sec-title" style="font-size:17px;">Шунга ўхшаш</div>
-            <div class="sec-link" onclick="openSimilarGrid(${p.id})">Барчаси (${related.length}) →</div>
           </div>
           <div class="rel-row">${relHtml}</div>
         ` : ''}
@@ -669,20 +794,6 @@
     btn.textContent = liked ? "❤️" : "♡";
   }
 
-  function openSimilarGrid(id) {
-    const p = allProducts.find(x => x.id === id);
-    if (!p) return;
-    const list = allProducts.filter(x => x.id !== p.id && x.category === p.category);
-    document.getElementById("fmTopTitle").textContent = "Шунга ўхшаш";
-    document.getElementById("modalBody").innerHTML = `
-      <div style="padding:12px 16px;">
-        <div class="sec-title" style="margin-bottom:12px;">Шунга ўхшаш (${list.length} та)</div>
-        <div class="grid">${list.map(productCardHtml).join("")}</div>
-      </div>
-    `;
-    openModal();
-  }
-
   /* "ЯНА" SUB-PAGES */
   function openMoreSub(key) {
     const body = document.getElementById("modalBody");
@@ -691,36 +802,35 @@
       const favList = allProducts.filter(p => likes.includes(p.id));
       body.innerHTML = favList.length
         ? `<div style="padding:12px 16px;"><div class="grid">${favList.map(productCardHtml).join("")}</div></div>`
-        : `<div style="padding:40px 20px;text-align:center;color:var(--muted);">♡ Ҳозирча севимли маҳсулотлар йўқ.<br/>Ёққан дори устидаги юракчани босинг!</div>`;
+        : `<div style="padding:40px 20px;text-align:center;color:var(--muted);">♡ Ҳозирча севимли маҳсулотлар йўқ.</div>`;
     } else if (key === "branches") {
       document.getElementById("fmTopTitle").textContent = "Филиаллар";
       body.innerHTML = `
         <div style="padding:14px 16px;">
           <div class="dm-box">
-            <div style="font-size:16px;font-weight:700;margin-bottom:8px;">🏥 Vitora | Smart Pharm — Самарқанд</div>
-            <div class="dm-kv"><span class="dm-k">Манзил</span><span class="dm-v">Самарқанд шаҳри, Асосий филиал</span></div>
-            <div class="dm-kv"><span class="dm-k">Иш вақти</span><span class="dm-v">08:00 – 22:00 (ҳар куни)</span></div>
+            <div style="font-size:16px;font-weight:700;margin-bottom:8px;">🏥 Vitora | Smart Pharm</div>
+            <div class="dm-kv"><span class="dm-k">Манзил</span><span class="dm-v">Самарқанд шаҳар, Қозизода Румий 56 А уй</span></div>
+            <div class="dm-kv"><span class="dm-k">Иш вақти</span><span class="dm-v">08:00 – 24:00 (ҳар куни)</span></div>
             <div class="dm-kv"><span class="dm-k">Етказиб бериш</span><span class="dm-v" style="color:var(--green)">Мавжуд</span></div>
           </div>
         </div>`;
     } else if (key === "news") {
       document.getElementById("fmTopTitle").textContent = "Янгиликлар";
-      body.innerHTML = `
-        <div style="padding:14px 16px;">
-          <div class="dm-box">
-            <div style="font-size:15px;font-weight:700;margin-bottom:6px;">🎉 Янги БАДлар тўплами келди!</div>
-            <div style="font-size:13px;color:var(--muted);line-height:1.4;">Омега-3, витаминлар ва табиий фито-маҳсулотлар энди онлайн буюртма учун мавжуд. Ҳар бир хариддан бонус йиғинг!</div>
-          </div>
-        </div>`;
+      body.innerHTML = allNews.length
+        ? `<div style="padding:14px 16px;">${allNews.map(n => `
+            <div class="dm-box">
+              ${n.image ? `<img src="${n.image}" style="width:100%;border-radius:10px;margin-bottom:8px;" />` : ''}
+              <div style="font-size:14px;line-height:1.45;">${n.body}</div>
+            </div>
+          `).join("")}</div>`
+        : `<div style="padding:40px 20px;text-align:center;color:var(--muted);">📰 Ҳозирча янгиликлар йўқ.</div>`;
     } else if (key === "support") {
       document.getElementById("fmTopTitle").textContent = "Мурожаат";
       body.innerHTML = `
         <div style="padding:14px 16px;">
           <div class="dm-box">
             <div style="font-size:14px;color:var(--muted);margin-bottom:10px;">Фармацевт ёки операторга саволингизни ёзинг:</div>
-            <div class="form-group" style="margin-top:0;">
-              <textarea id="supTxt" rows="4" placeholder="Саволингизни шу ерга ёзинг..."></textarea>
-            </div>
+            <div class="form-group" style="margin-top:0;"><textarea id="supTxt" rows="4" placeholder="Саволингизни ёзинг..."></textarea></div>
             <button class="submit-btn" onclick="sendSupportMsg()">📩 Юбориш</button>
           </div>
         </div>`;
@@ -731,8 +841,9 @@
           <div class="dm-box">
             <div class="dm-kv"><span class="dm-k">Мижоз</span><span class="dm-v">${user ? user.first_name : 'Меҳмон'}</span></div>
             <div class="dm-kv"><span class="dm-k">Бонус карта</span><span class="dm-v">${userCardId}</span></div>
-            <div class="dm-kv"><span class="dm-k">Бонус баланс</span><span class="dm-v" style="color:var(--green)">5 000 сўм</span></div>
-            <div class="dm-kv"><span class="dm-k">Даража</span><span class="dm-v">Бронза</span></div>
+            <div class="dm-kv"><span class="dm-k">Бонус баланс</span><span class="dm-v" style="color:var(--green)">${Number(userProfile.bonus).toLocaleString()} сўм</span></div>
+            <div class="dm-kv"><span class="dm-k">Даража</span><span class="dm-v">${userProfile.tier} (${userProfile.cashback_pct}% кэшбэк)</span></div>
+            <div class="dm-kv"><span class="dm-k">Жами харидлар</span><span class="dm-v">${Number(userProfile.total_spent).toLocaleString()} сўм</span></div>
           </div>
         </div>`;
     } else if (key === "invite") {
@@ -741,7 +852,7 @@
         <div style="padding:14px 16px;">
           <div class="dm-box">
             <div style="font-size:16px;font-weight:700;margin-bottom:6px;">🎁 Дўстларингизни таклиф қилинг!</div>
-            <div style="font-size:13px;color:var(--muted);line-height:1.4;margin-bottom:12px;">Яқинларингизга Vitora | Smart Pharm ботини улашинг ва биргаликда бонусларга эга бўлинг.</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.4;margin-bottom:12px;">Яқинларингизга Vitora | Smart Pharm ботини улашинг ва кэшбэк йиғинг.</div>
             <button class="dm-cart-btn" style="width:100%;" onclick="copyInviteLink()">📋 Ҳаволани нусхалаш</button>
           </div>
         </div>`;
@@ -751,7 +862,7 @@
         <div style="padding:14px 16px;">
           <div class="dm-box">
             <div class="dm-kv"><span class="dm-k">Тил</span><span class="dm-v">Ўзбекча</span></div>
-            <div class="dm-kv"><span class="dm-k">Илова версияси</span><span class="dm-v">Vitora Smart Pharm v3.0</span></div>
+            <div class="dm-kv"><span class="dm-k">Илова версияси</span><span class="dm-v">Vitora Smart Pharm v4.0</span></div>
           </div>
         </div>`;
     }
@@ -787,19 +898,16 @@
   }
 
   function addFromDetail(id) {
-    addToCart(id, detailQty);
-    closeModal();
-  }
-
-  function addToCart(id, qty) {
     const p = allProducts.find(x => x.id === id);
     if (!p) return;
-    const existing = cart.find(x => x.id === id);
-    if (existing) existing.qty += qty;
-    else cart.push({ id: p.id, name: p.name, price: p.price, qty: qty });
+    const idx = cart.findIndex(x => x.id === id);
+    if (idx === -1) cart.push({ id: p.id, name: p.name, price: p.price, qty: detailQty });
+    else cart[idx].qty = detailQty;
     localStorage.setItem("vitora_cart", JSON.stringify(cart));
     updateCartBadge();
-    showToast("✅ Саватга қўшилди!");
+    renderAllViews();
+    showToast(`✅ Саватга қўшилди (+${detailQty})`);
+    closeModal();
   }
 
   function updateCartBadge() {
@@ -826,6 +934,7 @@
     if (tab === "home") {
       document.getElementById("sec-home").classList.add("active");
       document.getElementById("nav-home").classList.add("active");
+      renderHome();
     } else if (tab === "cat") {
       document.getElementById("sec-cat").classList.add("active");
       document.getElementById("nav-cat").classList.add("active");
@@ -862,16 +971,22 @@
             <div style="font-size:13px;font-weight:700;">${item.name}</div>
             <div style="font-size:12px;color:#94a3b8;">${item.qty} × ${item.price.toLocaleString()} сўм</div>
           </div>
-          <button onclick="removeCart(${idx})" style="background:#ef4444;color:#fff;border:none;border-radius:8px;padding:5px 9px;">✕</button>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <button onclick="updateCartItemQty(${idx}, -1)" style="background:#1e293b;color:#fff;border:none;border-radius:7px;width:28px;height:28px;font-weight:700;">−</button>
+            <span style="font-weight:800;min-width:22px;text-align:center;">+${item.qty}</span>
+            <button onclick="updateCartItemQty(${idx}, 1)" style="background:#1d8cf8;color:#fff;border:none;border-radius:7px;width:28px;height:28px;font-weight:700;">+</button>
+          </div>
         </div>
       `;
     }).join("");
-    totalBox.textContent = `Жами: ${total.toLocaleString()} сўм`;
+    const estCb = Math.round(total * (userProfile.cashback_pct / 100));
+    totalBox.innerHTML = `Жами: ${total.toLocaleString()} сўм <div style="font-size:13px;color:var(--green);margin-top:4px;">🎁 Бу хариддан +${estCb.toLocaleString()} сўм (${userProfile.cashback_pct}%) кэшбэк оласиз!</div>`;
     form.style.display = "block";
   }
 
-  function removeCart(idx) {
-    cart.splice(idx, 1);
+  function updateCartItemQty(idx, delta) {
+    cart[idx].qty += delta;
+    if (cart[idx].qty <= 0) cart.splice(idx, 1);
     localStorage.setItem("vitora_cart", JSON.stringify(cart));
     updateCartBadge();
     renderCart();
