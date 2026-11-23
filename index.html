@@ -3,132 +3,194 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Vitora | Smart Pharm</title>
+  <title>Vitora | Smart Pharm Sanoat</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Jonli Kamera QR Skaner kutubxonasi -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <style>
     :root {
-      --bg: #070d19; --card: #111b2e; --card2: #17233b;
-      --text: #f8fafc; --muted: #94a3b8; --accent: #2563eb;
-      --cyan: #06b6d4; --green: #10b981; --border: #1e293b;
+      --bg: #f1f6f5;
+      --card: #ffffff;
+      --card2: #f8fbfa;
+      --text: #0f2922;
+      --muted: #527168;
+      --emerald: #0d7a53;
+      --emerald-bright: #10b981;
+      --blue: #1565c0;
+      --gold: #d97706;
+      --border: #d5e4df;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: radial-gradient(circle at top, #0f1f3d 0%, var(--bg) 55%); color: var(--text); padding-bottom: 88px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+    html, body { height: 100%; background: var(--bg); color: var(--text); -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+    body { padding-bottom: 92px; }
 
-    /* RULON PAKET OCHILISH VA ORQADAN OLDINGA 3D ANIMATSIYALAR */
     @keyframes unrollCurtain {
-      0% { opacity: 0; transform: perspective(900px) rotateX(-24deg) translateY(-24px) scale(0.92); filter: blur(4px); }
-      100% { opacity: 1; transform: perspective(900px) rotateX(0deg) translateY(0) scale(1); filter: blur(0); }
+      0% { opacity: 0; transform: perspective(900px) rotateX(-22deg) translateY(-18px) scale(0.94); }
+      100% { opacity: 1; transform: perspective(900px) rotateX(0deg) translateY(0) scale(1); }
     }
     @keyframes depthZoomIn {
-      0% { opacity: 0; transform: scale(0.76) translateY(28px); }
+      0% { opacity: 0; transform: scale(0.78) translateY(24px); }
       70% { opacity: 1; transform: scale(1.02) translateY(-2px); }
       100% { opacity: 1; transform: scale(1) translateY(0); }
     }
-    @keyframes floatAura {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-4px); }
+    @keyframes floatGear {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-4px) rotate(8deg); }
     }
 
-    .unroll-stage { animation: unrollCurtain 0.65s cubic-bezier(0.22, 1, 0.36, 1) both; transform-origin: top center; }
-
-    .header { padding: 12px 16px 10px; position: sticky; top: 0; background: rgba(7,13,25,0.92); backdrop-filter: blur(12px); z-index: 20; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .header {
+      padding: 12px 16px 10px;
+      position: sticky; top: 0;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      z-index: 30;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 4px 16px rgba(13, 122, 83, 0.06);
+    }
     .greet-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .greet-txt { font-size: 16px; font-weight: 800; background: linear-gradient(90deg, #fff, #93c5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .greet-tier { font-size: 11px; background: rgba(16,185,129,0.16); color: #6ee7b7; padding: 4px 10px; border-radius: 12px; font-weight: 700; border: 1px solid rgba(16,185,129,0.3); }
+    .greet-txt { font-size: 16px; font-weight: 800; color: var(--emerald); }
+    .greet-tier {
+      font-size: 11px;
+      background: linear-gradient(135deg, rgba(217,119,6,0.14), rgba(16,185,129,0.14));
+      color: #92400e;
+      padding: 4px 10px; border-radius: 12px; font-weight: 800;
+      border: 1px solid rgba(217,119,6,0.35);
+    }
 
-    .search-box { display: flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 10px 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
+    .search-box {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: 14px; padding: 9px 14px;
+    }
     .search-box input { background: transparent; border: none; outline: none; color: var(--text); font-size: 15px; width: 100%; }
 
-    /* QIDIRUV VA SARALASH FILTRLARI */
     .filter-bar { display: flex; gap: 7px; overflow-x: auto; padding: 10px 0 2px; scrollbar-width: none; }
     .filter-bar::-webkit-scrollbar { display: none; }
-    .f-chip { background: var(--card2); color: #cbd5e1; border: 1px solid var(--border); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap; cursor: pointer; transition: 0.2s; }
-    .f-chip.active { background: linear-gradient(135deg, var(--accent), var(--cyan)); color: #fff; border-color: transparent; box-shadow: 0 4px 12px rgba(37,99,235,0.35); }
+    .f-chip {
+      background: #ffffff; color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;
+      white-space: nowrap; cursor: pointer; transition: 0.2s;
+    }
+    .f-chip.active {
+      background: linear-gradient(135deg, var(--emerald), var(--blue));
+      color: #fff; border-color: transparent;
+      box-shadow: 0 4px 12px rgba(13, 122, 83, 0.25);
+    }
 
-    .section { padding: 12px 16px; display: none; }
-    .section.active { display: block; animation: unrollCurtain 0.5s ease both; }
+    .section { padding: 14px 16px; display: none; }
+    .section.active { display: block; animation: unrollCurtain 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
-    .promo-banner { background: linear-gradient(135deg, #1d4ed8, #4f46e5, #0891b2); border-radius: 18px; padding: 16px; margin-bottom: 18px; cursor: pointer; box-shadow: 0 12px 28px rgba(29,78,216,0.3); position: relative; overflow: hidden; }
-    .promo-banner::after { content: "💊"; position: absolute; right: 14px; bottom: -6px; font-size: 56px; opacity: 0.22; animation: floatAura 3s ease-in-out infinite; }
-    .promo-title { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
+    .promo-banner {
+      background: linear-gradient(135deg, #0b6e4f 0%, #1565c0 75%, #0284c7 100%);
+      border-radius: 20px; padding: 18px; margin-bottom: 18px;
+      color: #fff; cursor: pointer; position: relative; overflow: hidden;
+      box-shadow: 0 12px 26px rgba(11, 110, 79, 0.24);
+      border-bottom: 3px solid #f59e0b;
+    }
+    .promo-banner::after { content: "🌿"; position: absolute; right: 14px; bottom: 4px; font-size: 50px; opacity: 0.28; animation: floatGear 3.5s ease-in-out infinite; }
+    .promo-tag { display: inline-block; background: rgba(245, 158, 11, 0.92); color: #fff; font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 8px; margin-bottom: 6px; letter-spacing: 0.6px; }
+    .promo-title { font-size: 19px; font-weight: 800; margin-bottom: 4px; }
     .promo-sub { font-size: 13px; color: #e0f2fe; }
 
     .sec-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .sec-title { font-size: 18px; font-weight: 800; }
+    .sec-title { font-size: 18px; font-weight: 800; color: var(--text); }
 
     .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
 
-    /* QALQIB TURUVCHI VA BOSGANDA BITTA KATTALASHUVCHI KARTOCHKA */
     .p-card {
-      background: linear-gradient(180deg, var(--card2) 0%, var(--card) 100%);
-      border: 1px solid rgba(255,255,255,0.07);
+      background: var(--card);
+      border: 1px solid var(--border);
       border-radius: 18px; padding: 10px;
       display: flex; flex-direction: column; justify-content: space-between;
       cursor: pointer; position: relative;
-      box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+      box-shadow: 0 8px 20px rgba(15, 41, 34, 0.06);
       transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.22s ease;
-      animation: depthZoomIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation: depthZoomIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
-    .p-card.pop-zoom { transform: scale(1.08) translateY(-6px) !important; box-shadow: 0 18px 36px rgba(37,99,235,0.45); z-index: 15; }
+    .p-card.pop-zoom { transform: scale(1.07) translateY(-5px) !important; box-shadow: 0 16px 32px rgba(13, 122, 83, 0.28); z-index: 15; border-color: var(--emerald); }
 
-    .p-thumb { position: relative; height: 120px; border-radius: 13px; overflow: hidden; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; background: linear-gradient(135deg, #e0f2fe, #bae6fd); }
+    .p-thumb {
+      position: relative; height: 122px; border-radius: 14px; overflow: hidden;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 8px;
+      background: linear-gradient(135deg, #e6f4f0, #e0f2fe);
+    }
     .p-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.35s ease; }
     .p-card:hover .p-thumb img { transform: scale(1.06); }
-    .p-brand-tag { position: absolute; top: 6px; left: 6px; background: rgba(7,13,25,0.8); color: #93c5fd; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 9px; }
+    .p-brand-tag { position: absolute; top: 6px; left: 6px; background: rgba(11, 110, 79, 0.9); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 8px; }
     .disc-badge { position: absolute; bottom: 6px; left: 6px; background: #ef4444; color: #fff; font-size: 11px; font-weight: 800; padding: 2px 7px; border-radius: 8px; }
-    .like-btn { position: absolute; top: 6px; right: 6px; width: 29px; height: 29px; border-radius: 50%; border: none; background: rgba(15,23,42,0.75); color: #fff; font-size: 14px; display: flex; align-items: center; justify-content: center; z-index: 3; }
-    .like-btn.liked { color: #ef4444; background: #fff; }
+    .like-btn { position: absolute; top: 6px; right: 6px; width: 28px; height: 28px; border-radius: 50%; border: none; background: rgba(255,255,255,0.9); color: #0f2922; font-size: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.12); z-index: 3; }
+    .like-btn.liked { color: #ef4444; }
 
-    .p-name { font-size: 13px; font-weight: 700; line-height: 1.3; margin-bottom: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .p-meta-row { display: flex; justify-content: space-between; font-size: 10.5px; color: #fbbf24; margin-bottom: 5px; font-weight: 700; }
+    .p-name { font-size: 13px; font-weight: 700; line-height: 1.3; margin-bottom: 4px; color: var(--text); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .p-meta-row { display: flex; justify-content: space-between; font-size: 11px; color: var(--gold); margin-bottom: 5px; font-weight: 700; }
     .p-old-price { font-size: 11px; color: #94a3b8; text-decoration: line-through; }
-    .p-price { font-size: 15px; font-weight: 800; margin-bottom: 2px; color: #fff; }
-    .p-stock { font-size: 11px; color: var(--green); font-weight: 600; margin-bottom: 8px; }
+    .p-price { font-size: 15px; font-weight: 800; margin-bottom: 2px; color: var(--blue); }
+    .p-stock { font-size: 11px; color: var(--emerald); font-weight: 700; margin-bottom: 8px; }
 
-    .card-cart-btn { width: 100%; height: 35px; border-radius: 10px; border: none; background: linear-gradient(135deg, var(--accent), #1d4ed8); color: #fff; font-size: 13px; font-weight: 700; cursor: pointer; }
-    .card-qty-bar { width: 100%; height: 35px; border-radius: 10px; background: var(--bg); border: 1px solid var(--accent); display: flex; align-items: center; justify-content: space-between; padding: 0 8px; }
-    .card-qty-bar button { background: var(--accent); color: #fff; border: none; width: 25px; height: 25px; border-radius: 7px; font-size: 16px; font-weight: 800; }
+    .card-cart-btn {
+      width: 100%; height: 36px; border-radius: 11px; border: none;
+      background: linear-gradient(135deg, var(--emerald), #0f9d6b);
+      color: #fff; font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+    .card-qty-bar {
+      width: 100%; height: 36px; border-radius: 11px;
+      background: #e6f4f0; border: 1.5px solid var(--emerald);
+      display: flex; align-items: center; justify-content: space-between; padding: 0 8px;
+    }
+    .card-qty-bar button { background: var(--emerald); color: #fff; border: none; width: 25px; height: 25px; border-radius: 7px; font-size: 16px; font-weight: 800; }
 
-    /* TO'LIQ TOVAR KARTASI VA RULON OCHILISHI */
     .full-modal { position: fixed; inset: 0; background: var(--bg); z-index: 100; overflow-y: auto; display: none; padding-bottom: 36px; }
-    .full-modal.open { display: block; animation: unrollCurtain 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
-    .fm-topbar { position: sticky; top: 0; z-index: 15; background: rgba(7,13,25,0.95); backdrop-filter: blur(10px); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
-    .fm-back { background: rgba(255,255,255,0.1); border: none; color: #fff; font-size: 14px; font-weight: 600; padding: 7px 14px; border-radius: 10px; cursor: pointer; }
+    .full-modal.open { display: block; animation: unrollCurtain 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
+    .fm-topbar { position: sticky; top: 0; z-index: 15; background: rgba(255,255,255,0.96); backdrop-filter: blur(10px); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+    .fm-back { background: #e6f4f0; border: none; color: var(--emerald); font-size: 14px; font-weight: 700; padding: 7px 14px; border-radius: 10px; cursor: pointer; }
 
-    .info-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 12px; }
-    .info-card h4 { font-size: 13px; color: #60a5fa; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-    .info-card p { font-size: 13px; line-height: 1.45; color: #e2e8f0; }
+    .info-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 11px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+    .info-card h4 { font-size: 13px; color: var(--blue); margin-bottom: 5px; display: flex; align-items: center; gap: 6px; }
+    .info-card p { font-size: 13px; line-height: 1.45; color: var(--text); }
 
     .star-bar { display: flex; gap: 8px; margin-top: 8px; }
-    .star-btn { flex: 1; padding: 8px 0; border-radius: 10px; border: 1px solid var(--border); background: var(--card2); color: #fbbf24; font-size: 14px; font-weight: 800; cursor: pointer; }
-    .star-btn:active { transform: scale(1.12); background: #fbbf24; color: #000; }
+    .star-btn { flex: 1; padding: 8px 0; border-radius: 10px; border: 1px solid #fde68a; background: #fffbeb; color: #b45309; font-size: 14px; font-weight: 800; cursor: pointer; }
 
-    /* PASTKI MENYU + O'RTADA MAXSUS QR TUGMASI */
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 68px; background: rgba(17,27,46,0.96); backdrop-filter: blur(12px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 50; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--muted); font-size: 10.5px; cursor: pointer; position: relative; flex: 1; }
-    .nav-item.active { color: #60a5fa; font-weight: 700; }
+    .bottom-nav {
+      position: fixed !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      height: 68px;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(12px);
+      border-top: 1.5px solid var(--border);
+      display: flex; justify-content: space-around; align-items: center;
+      z-index: 90;
+      box-shadow: 0 -6px 20px rgba(15, 41, 34, 0.08);
+    }
+    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--muted); font-size: 10.5px; font-weight: 600; cursor: pointer; position: relative; flex: 1; }
+    .nav-item.active { color: var(--emerald); font-weight: 800; }
     .qr-center-btn {
-      width: 54px; height: 54px; border-radius: 18px;
-      background: linear-gradient(135deg, #2563eb, #06b6d4);
+      width: 60px; height: 60px; border-radius: 18px;
+      background: linear-gradient(135deg, var(--emerald), var(--blue));
       color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center;
-      margin-top: -22px; box-shadow: 0 8px 22px rgba(6,182,212,0.45);
-      border: 3px solid var(--bg); font-size: 10px; font-weight: 800; cursor: pointer;
+      margin-top: -22px; box-shadow: 0 8px 20px rgba(13, 122, 83, 0.35);
+      border: 3px solid #fff; font-size: 9.5px; font-weight: 800; cursor: pointer; text-align: center;
     }
     .badge { position: absolute; top: -4px; right: 16px; background: #ef4444; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 10px; }
 
     .cart-item { display: flex; justify-content: space-between; align-items: center; background: var(--card); padding: 12px; border-radius: 14px; margin-bottom: 8px; border: 1px solid var(--border); }
     .form-group { margin-top: 12px; }
-    .form-group label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 5px; }
-    .form-group input, .form-group select { width: 100%; padding: 11px 12px; border-radius: 11px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 14px; }
-    .card-copy-box { background: rgba(37,99,235,0.14); border: 1px dashed #60a5fa; border-radius: 12px; padding: 12px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
-    .submit-btn { width: 100%; padding: 14px; border-radius: 13px; border: none; background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-size: 16px; font-weight: 700; margin-top: 14px; cursor: pointer; }
+    .form-group label { display: block; font-size: 13px; color: var(--muted); font-weight: 600; margin-bottom: 5px; }
+    .form-group input, .form-group select { width: 100%; padding: 11px 12px; border-radius: 11px; border: 1.5px solid var(--border); background: #fff; color: var(--text); font-size: 14px; }
+    .card-copy-box { background: #eff6ff; border: 1.5px dashed var(--blue); border-radius: 12px; padding: 12px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
+    .submit-btn { width: 100%; padding: 14px; border-radius: 14px; border: none; background: linear-gradient(135deg, var(--emerald), #059669); color: #fff; font-size: 15px; font-weight: 800; margin-top: 12px; cursor: pointer; box-shadow: 0 8px 20px rgba(13, 122, 83, 0.25); }
     .more-list { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
-    .more-row { display: flex; align-items: center; justify-content: space-between; padding: 15px 16px; cursor: pointer; font-size: 15px; }
+    .more-row { display: flex; align-items: center; justify-content: space-between; padding: 15px 16px; cursor: pointer; font-size: 15px; font-weight: 600; }
     .more-row:not(:last-child) { border-bottom: 1px solid var(--border); }
-    .toast { position: fixed; top: 18px; left: 50%; transform: translateX(-50%); background: var(--green); color: #fff; padding: 9px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; z-index: 250; display: none; }
+    .toast { position: fixed; top: 18px; left: 50%; transform: translateX(-50%); background: var(--emerald); color: #fff; padding: 9px 18px; border-radius: 20px; font-size: 13px; font-weight: 700; z-index: 250; display: none; box-shadow: 0 6px 18px rgba(0,0,0,0.2); }
+
+    #qrReaderBox { width: 100%; border-radius: 16px; overflow: hidden; border: 2px solid var(--emerald); background: #000; }
   </style>
 </head>
-<body class="unroll-stage">
+<body>
 
 <div class="toast" id="toast">Бажарилди!</div>
 
@@ -142,41 +204,41 @@
     <input type="text" id="searchInput" placeholder="Масалан: Омега, Витамин D3..." oninput="onSearchInput()" />
   </div>
   <div class="filter-bar" id="filterBar">
-    <button class="f-chip active" onclick="setSort('default', this)">✨ Барчаси</button>
-    <button class="f-chip" onclick="setSort('cheap', this)">💵 Арзонроқ</button>
-    <button class="f-chip" onclick="setSort('expensive', this)">💎 Қимматроқ</button>
-    <button class="f-chip" onclick="setSort('rating', this)">⭐ Топ рейтинг</button>
-    <button class="f-chip" onclick="setSort('discount', this)">🔥 Чегирмали</button>
+    <button class="f-chip active" onclick="setSort('default', this)" id="chipAll">✨ Барчаси</button>
+    <button class="f-chip" onclick="setSort('cheap', this)" id="chipCheap">💵 Арзонроқ</button>
+    <button class="f-chip" onclick="setSort('expensive', this)" id="chipExp">💎 Қимматроқ</button>
+    <button class="f-chip" onclick="setSort('rating', this)" id="chipRate">⭐ Топ рейтинг</button>
+    <button class="f-chip" onclick="setSort('discount', this)" id="chipDisc">🔥 Чегирмали</button>
   </div>
 </div>
 
 <!-- 1. HOME -->
 <div class="section active" id="sec-home">
   <div class="promo-banner" onclick="switchTab('cat')">
-    <div style="font-size:11px;color:#bae6fd;margin-bottom:3px;">VITORA | SMART PHARM</div>
-    <div class="promo-title">❄️ Иммунитет ва Қувват</div>
-    <div class="promo-sub">Оригинал БАД ва витаминлар каталоги →</div>
+    <div class="promo-tag">SMART PHARM SANOAT · VITORA</div>
+    <div class="promo-title" id="bannerTitle">🌿 Табиий Қувват ва Иммунитет</div>
+    <div class="promo-sub" id="bannerSub">Оригинал БАД ва витаминлар каталоги →</div>
   </div>
   <div class="sec-head">
-    <div class="sec-title" id="t_avail_title">Мавжуд маҳсулотлар</div>
+    <div class="sec-title" id="homeSecTitle">Мавжуд маҳсулотлар</div>
   </div>
   <div class="grid" id="homePopularGrid"></div>
 </div>
 
 <!-- 2. CATALOG -->
 <div class="section" id="sec-cat">
-  <div class="sec-head"><div class="sec-title" id="catTitle">Каталог</div></div>
+  <div class="sec-head"><div class="sec-title" id="catSecTitle">Каталог</div></div>
   <div class="filter-bar" id="brandChips" style="margin-bottom:10px;"></div>
   <div class="grid" id="catalogGrid"></div>
 </div>
 
 <!-- 3. CART -->
 <div class="section" id="sec-cart">
-  <div class="sec-title" style="margin-bottom:4px;">🛒 Саватча</div>
-  <div style="font-size:12px;color:#fbbf24;margin-bottom:10px;">⏳ Товарлар 15 дақиқага сиз учун банд қилинади.</div>
+  <div class="sec-title" style="margin-bottom:4px;" id="cartSecTitle">🛒 Саватча</div>
+  <div style="font-size:12px;color:#b45309;font-weight:600;margin-bottom:10px;" id="cartHoldNote">⏳ Товарлар 15 дақиқага сиз учун банд қилинади.</div>
   <div id="cartList"></div>
   <div id="bonusToggleBox" style="display:none;background:var(--card);padding:11px;border-radius:12px;margin:10px 0;border:1px solid var(--border);">
-    <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;">
+    <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;cursor:pointer;">
       <input type="checkbox" id="chkUseBonus" onchange="renderCart()" />
       <span id="bonusChkText">🎁 Бонусни ишлатиш</span>
     </label>
@@ -184,18 +246,18 @@
   <div id="cartTotalBox" style="font-size:17px;font-weight:800;margin:10px 0;"></div>
 
   <div id="orderForm" style="display:none;">
-    <div class="form-group"><label>Исмингиз</label><input type="text" id="inpName" /></div>
-    <div class="form-group"><label>Телефон</label><input type="tel" id="inpPhone" placeholder="+998 90 123 45 67" /></div>
+    <div class="form-group"><label id="lblName">Исмингиз</label><input type="text" id="inpName" /></div>
+    <div class="form-group"><label id="lblPhone">Телефон</label><input type="tel" id="inpPhone" placeholder="+998 90 123 45 67" /></div>
     <div class="form-group">
-      <label>Олиб кетиш усули</label>
+      <label id="lblDeliv">Олиб кетиш усули</label>
       <select id="inpDelivery" onchange="toggleAddress()">
         <option value="Дорихонадан олиб кетиш">🏥 Дорихонадан олиб кетиш</option>
         <option value="Курьер орқали етказиб бериш">🚚 Курьер орқали етказиб бериш</option>
       </select>
     </div>
-    <div class="form-group" id="addrGroup" style="display:none;"><label>Манзил</label><input type="text" id="inpAddress" /></div>
+    <div class="form-group" id="addrGroup" style="display:none;"><label id="lblAddr">Манзил</label><input type="text" id="inpAddress" /></div>
     <div class="form-group">
-      <label>Тўлов тури</label>
+      <label id="lblPay">Тўлов тури</label>
       <select id="inpPayment" onchange="toggleCardBox()">
         <option value="Click">💳 Click</option>
         <option value="Payme">💳 Payme</option>
@@ -204,45 +266,40 @@
     </div>
     <div class="card-copy-box" id="cardCopyBox">
       <div>
-        <div style="font-size:11px;color:var(--muted);">Click / Payme учун карта:</div>
-        <div style="font-size:15px;font-weight:800;" id="humoCardNum">9860 1501 1189 2918</div>
+        <div style="font-size:11px;color:var(--muted);">Click / Payme:</div>
+        <div style="font-size:15px;font-weight:800;color:var(--blue);" id="humoCardNum">9860 1501 1189 2918</div>
       </div>
-      <button type="button" onclick="copyCardNum()" style="background:var(--accent);color:#fff;border:none;padding:7px 12px;border-radius:9px;font-weight:700;">📋 Нусха</button>
+      <button type="button" onclick="copyCardNum()" style="background:var(--blue);color:#fff;border:none;padding:7px 12px;border-radius:9px;font-weight:700;">📋 Copy</button>
     </div>
-    <button class="submit-btn" onclick="submitOrder()">✅ Буюртмани тасдиқлаш</button>
+    <button class="submit-btn" onclick="submitOrder()" id="btnSubmitOrder">✅ Буюртмани тасдиқлаш</button>
   </div>
 </div>
 
 <!-- 4. MORE -->
 <div class="section" id="sec-more">
-  <div class="sec-title" style="margin-bottom:14px;">Яна</div>
-  <div class="more-list">
-    <div class="more-row" onclick="openQrModal()"><span>🪪 Менинг QR-кодим ва Бонус</span><span>›</span></div>
-    <div class="more-row" onclick="openMoreSub('favs')"><span>♡ Севимлилар</span><span>›</span></div>
-    <div class="more-row" onclick="openMoreSub('loc')"><span>📍 Жойлашув (Самарқанд)</span><span>›</span></div>
-    <div class="more-row" onclick="openMoreSub('news')"><span>📰 Янгиликлар</span><span>›</span></div>
-  </div>
+  <div class="sec-title" style="margin-bottom:14px;" id="moreSecTitle">Яна</div>
+  <div class="more-list" id="moreMenuList"></div>
 </div>
 
 <div class="full-modal" id="fullModal">
   <div class="fm-topbar">
     <button class="fm-back" onclick="closeModal()">← Орқага</button>
-    <div id="fmTopTitle" style="font-size:14px;font-weight:700;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
+    <div id="fmTopTitle" style="font-size:14px;font-weight:800;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
     <div style="width:60px;"></div>
   </div>
   <div id="modalBody"></div>
 </div>
 
-<!-- PASTKI MENYU: KATALOG VA SAVATCHA O'RTASIDA SHAXSIY QR TUGMASI -->
+<!-- PASTKI MENYU: MIJOZ UCHUN "QR КОД", XODIM UCHUN "📷 СКАНЕР" -->
 <div class="bottom-nav">
-  <div class="nav-item active" id="nav-home" onclick="switchTab('home')"><span style="font-size:19px;">🏠</span><span id="n_home">Асосий</span></div>
-  <div class="nav-item" id="nav-cat" onclick="switchTab('cat')"><span style="font-size:19px;">⊞</span><span id="n_cat">Каталог</span></div>
-  <div class="qr-center-btn" onclick="openQrModal()">
-    <span style="font-size:20px;line-height:1;">🪪</span>
-    <span>QR КОД</span>
+  <div class="nav-item active" id="nav-home" onclick="switchTab('home')"><span style="font-size:19px;">🏠</span><span id="navHomeTxt">Асосий</span></div>
+  <div class="nav-item" id="nav-cat" onclick="switchTab('cat')"><span style="font-size:19px;">⊞</span><span id="navCatTxt">Каталог</span></div>
+  <div class="qr-center-btn" onclick="onCenterBtnClick()">
+    <span style="font-size:20px;line-height:1;" id="centerBtnIcon">🪪</span>
+    <span id="centerBtnTxt">QR КОД</span>
   </div>
-  <div class="nav-item" id="nav-cart" onclick="switchTab('cart')"><span style="font-size:19px;">🛍</span><span id="n_cart">Саватча</span><span class="badge" id="cartBadge" style="display:none;">0</span></div>
-  <div class="nav-item" id="nav-more" onclick="switchTab('more')"><span style="font-size:19px;">•••</span><span id="n_more">Яна</span></div>
+  <div class="nav-item" id="nav-cart" onclick="switchTab('cart')"><span style="font-size:19px;">🛍</span><span id="navCartTxt">Саватча</span><span class="badge" id="cartBadge" style="display:none;">0</span></div>
+  <div class="nav-item" id="nav-more" onclick="switchTab('more')"><span style="font-size:19px;">•••</span><span id="navMoreTxt">Яна</span></div>
 </div>
 
 <script>
@@ -251,20 +308,234 @@
   if (tg) { tg.expand(); tg.ready(); }
 
   const urlParams = new URLSearchParams(window.location.search);
-  let lang = urlParams.get("lang") || "cyr";
+  const LANG = urlParams.get("lang") || "cyr";
+  const ROLE = urlParams.get("role") || "client";
+  const IS_STAFF = ["superadmin", "admin", "worker"].includes(ROLE);
+
+  const I18N = {
+    cyr: {
+      search: "Масалан: Омега, Витамин D3...", all: "✨ Барчаси", cheap: "💵 Арзонроқ", exp: "💎 Қимматроқ", rate: "⭐ Топ рейтинг", disc: "🔥 Чегирмали",
+      bannerT: "🌿 Табиий Қувват ва Иммунитет", bannerS: "Оригинал БАД ва витаминлар каталоги →", homeT: "Мавжуд маҳсулотлар", catT: "Каталог",
+      cartT: "🛒 Саватча", hold: "⏳ Товарлар 15 дақиқага сиз учун банд қилинади.", addCart: "Саватга",
+      navHome: "Асосий", navCat: "Каталог", navCart: "Саватча", navMore: "Яна",
+      lblName: "Исмингиз", lblPhone: "Телефон", lblDeliv: "Олиб кетиш усули", lblAddr: "Манзил", lblPay: "Тўлов тури", submit: "✅ Буюртмани тасдиқлаш"
+    },
+    lat: {
+      search: "Masalan: Omega, Vitamin D3...", all: "✨ Barchasi", cheap: "💵 Arzonroq", exp: "💎 Qimmatroq", rate: "⭐ Top reyting", disc: "🔥 Chegirmali",
+      bannerT: "🌿 Tabiiy Quvvat va Immunitet", bannerS: "Original BAD va vitaminlar katalogi →", homeT: "Mavjud mahsulotlar", catT: "Katalog",
+      cartT: "🛒 Savatcha", hold: "⏳ Tovarlar 15 daqiqaga siz uchun band qilinadi.", addCart: "Savatga",
+      navHome: "Asosiy", navCat: "Katalog", navCart: "Savatcha", navMore: "Yana",
+      lblName: "Ismingiz", lblPhone: "Telefon", lblDeliv: "Olib ketish usuli", lblAddr: "Manzil", lblPay: "To'lov turi", submit: "✅ Buyurtmani tasdiqlash"
+    },
+    ru: {
+      search: "Например: Омега, Витамин D3...", all: "✨ Все", cheap: "💵 Дешевле", exp: "💎 Дороже", rate: "⭐ Топ рейтинг", disc: "🔥 Скидки",
+      bannerT: "🌿 Природная Сила и Иммунитет", bannerS: "Каталог оригинальных БАДов и витаминов →", homeT: "Доступные товары", catT: "Каталог",
+      cartT: "🛒 Корзина", hold: "⏳ Товары бронируются за вами на 15 минут.", addCart: "В корзину",
+      navHome: "Главная", navCat: "Каталог", navCart: "Корзина", navMore: "Ещё",
+      lblName: "Ваше имя", lblPhone: "Телефон", lblDeliv: "Способ получения", lblAddr: "Адрес", lblPay: "Способ оплаты", submit: "✅ Подтвердить заказ"
+    },
+    en: {
+      search: "Search: Omega-3, Vitamin D3...", all: "✨ All", cheap: "💵 Lowest Price", exp: "💎 Highest Price", rate: "⭐ Top Rated", disc: "🔥 Discounts",
+      bannerT: "🌿 Natural Energy & Immunity", bannerS: "Explore original supplements & vitamins →", homeT: "Available Products", catT: "Catalog",
+      cartT: "🛒 Cart", hold: "⏳ Items are reserved for you for 15 minutes.", addCart: "Add to Cart",
+      navHome: "Home", navCat: "Catalog", navCart: "Cart", navMore: "More",
+      lblName: "Your Name", lblPhone: "Phone Number", lblDeliv: "Delivery Method", lblAddr: "Delivery Address", lblPay: "Payment Method", submit: "✅ Confirm Order"
+    }
+  };
+  const T = I18N[LANG] || I18N.cyr;
+
   let allProducts = [];
   let allNews = [];
   let currentSort = "default";
   let selectedBrand = "ALL";
+  let html5QrScanner = null;
   let cart = JSON.parse(localStorage.getItem("vitora_cart") || "[]");
   let likes = JSON.parse(localStorage.getItem("vitora_likes") || "[]");
   let userProfile = { bonus: 2000, total_spent: 0, tier: "🥉 Бронза", cashback_pct: 1 };
 
   const user = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
+  const staffIdParam = urlParams.get("staff_id") || (user ? user.id : "5055854613");
   const sessionId = user && user.id ? String(user.id) : (localStorage.getItem("vtr_sess") || (() => { const s = "g" + Math.random().toString(36).slice(2); localStorage.setItem("vtr_sess", s); return s; })());
   const userCardId = user ? "VTR-" + (user.id || 1).toString(16).toUpperCase().padStart(8, "0").slice(0,8) : "VTR-000001";
   if (user) document.getElementById("inpName").value = user.first_name || "";
 
+  function applyTranslationsAndRoleUI() {
+    document.getElementById("searchInput").placeholder = T.search;
+    document.getElementById("chipAll").textContent = T.all;
+    document.getElementById("chipCheap").textContent = T.cheap;
+    document.getElementById("chipExp").textContent = T.exp;
+    document.getElementById("chipRate").textContent = T.rate;
+    document.getElementById("chipDisc").textContent = T.disc;
+    document.getElementById("bannerTitle").textContent = T.bannerT;
+    document.getElementById("bannerSub").textContent = T.bannerS;
+    document.getElementById("homeSecTitle").textContent = T.homeT;
+    document.getElementById("catSecTitle").textContent = T.catT;
+    document.getElementById("cartSecTitle").textContent = T.cartT;
+    document.getElementById("cartHoldNote").textContent = T.hold;
+    document.getElementById("navHomeTxt").textContent = T.navHome;
+    document.getElementById("navCatTxt").textContent = T.navCat;
+    document.getElementById("navCartTxt").textContent = T.navCart;
+    document.getElementById("navMoreTxt").textContent = T.navMore;
+    document.getElementById("moreSecTitle").textContent = T.navMore;
+    document.getElementById("lblName").textContent = T.lblName;
+    document.getElementById("lblPhone").textContent = T.lblPhone;
+    document.getElementById("lblDeliv").textContent = T.lblDeliv;
+    document.getElementById("lblAddr").textContent = T.lblAddr;
+    document.getElementById("lblPay").textContent = T.lblPay;
+    document.getElementById("btnSubmitOrder").textContent = T.submit;
+
+    if (IS_STAFF) {
+      // Xodimlar uchun markaziy tugma QR SKANER KAMERA bo'ladi!
+      document.getElementById("centerBtnIcon").textContent = "📷";
+      document.getElementById("centerBtnTxt").textContent = LANG === "en" ? "SCANNER" : "СКАНЕР";
+      document.getElementById("headerTierBadge").textContent = `👷 ${ROLE.toUpperCase()}`;
+      document.getElementById("moreMenuList").innerHTML = `
+        <div class="more-row" onclick="openStaffScannerModal()"><span>📷 Мижоз QR Сканер (Камера + ID)</span><span>›</span></div>
+        <div class="more-row" onclick="openMoreSub('news')"><span>📰 Янгиликлар</span><span>›</span></div>
+      `;
+    } else {
+      document.getElementById("centerBtnIcon").textContent = "🪪";
+      document.getElementById("centerBtnTxt").textContent = "QR CODE";
+      document.getElementById("moreMenuList").innerHTML = `
+        <div class="more-row" onclick="openQrModal()"><span>🪪 QR-код & Бонус</span><span>›</span></div>
+        <div class="more-row" onclick="openMoreSub('favs')"><span>♡ Севимлилар / Favorites</span><span>›</span></div>
+        <div class="more-row" onclick="openMoreSub('loc')"><span>📍 Жойлашув / Location</span><span>›</span></div>
+        <div class="more-row" onclick="openMoreSub('news')"><span>📰 Янгиликлар / News</span><span>›</span></div>
+      `;
+    }
+  }
+
+  function onCenterBtnClick() {
+    if (IS_STAFF) openStaffScannerModal();
+    else openQrModal();
+  }
+
+  // ================= XODIMLAR UCHUN JONLI KAMERALI QR-SKANER VA VTR-ID QIDIRUV =================
+  function stopCameraScanner() {
+    if (html5QrScanner) {
+      try {
+        html5QrScanner.stop().then(() => html5QrScanner.clear()).catch(() => {});
+      } catch (e) {}
+      html5QrScanner = null;
+    }
+  }
+
+  function openStaffScannerModal() {
+    document.getElementById("fmTopTitle").textContent = "📷 Мижоз QR Сканер & ID";
+    document.getElementById("modalBody").innerHTML = `
+      <div style="padding:16px;">
+        <div class="info-card" style="text-align:center;">
+          <h4 style="justify-content:center;">📷 Камера орқали мижоз QR-кодини сканер қилинг</h4>
+          <div id="qrReaderBox" style="margin:10px 0;"></div>
+          <button class="submit-btn" style="margin-top:6px;padding:10px;font-size:13px;" onclick="startLiveCamera()">🎥 Камерани ёқиш / Қайта сканер</button>
+        </div>
+
+        <div class="info-card">
+          <h4>⌨️ Ёки мижознинг шахсий рақамини (VTR-...) ёзинг:</h4>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <input type="text" id="manualVtrInput" placeholder="Масалан: VTR-000001 ёки +998..." style="flex:1;padding:11px;border-radius:11px;border:1.5px solid var(--border);font-size:14px;text-transform:uppercase;" />
+            <button onclick="lookupClientCode(document.getElementById('manualVtrInput').value)" style="background:var(--blue);color:#fff;border:none;padding:0 16px;border-radius:11px;font-weight:800;cursor:pointer;">🔍</button>
+          </div>
+        </div>
+
+        <div id="scanResultBox"></div>
+      </div>
+    `;
+    document.getElementById("fullModal").classList.add("open");
+    setTimeout(startLiveCamera, 300);
+  }
+
+  function startLiveCamera() {
+    stopCameraScanner();
+    if (typeof Html5Qrcode === "undefined") return;
+    html5QrScanner = new Html5Qrcode("qrReaderBox");
+    html5QrScanner.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: { width: 220, height: 220 } },
+      (decodedText) => {
+        stopCameraScanner();
+        showToast("✅ QR ўқилди: " + decodedText);
+        document.getElementById("manualVtrInput").value = decodedText;
+        lookupClientCode(decodedText);
+      },
+      () => {}
+    ).catch(() => {
+      document.getElementById("qrReaderBox").innerHTML = `<div style="padding:18px;color:#fff;font-size:13px;">⚠️ Камерага рухсат берилмади. Пастдаги майдонга <b>VTR-...</b> рақамини ёзинг.</div>`;
+    });
+  }
+
+  async function lookupClientCode(rawCode) {
+    const q = (rawCode || "").trim();
+    if (!q) return;
+    const resBox = document.getElementById("scanResultBox");
+    resBox.innerHTML = `<div class="info-card"><p>⏳ Қидирилмоқда...</p></div>`;
+
+    try {
+      const res = await fetch(`${API_BASE}/api/staff/scan_lookup?q=${encodeURIComponent(q)}`);
+      const data = await res.json();
+      if (!data.ok) {
+        resBox.innerHTML = `<div class="info-card" style="border-color:#ef4444;"><p style="color:#dc2626;font-weight:700;">❌ ${data.error}</p></div>`;
+        return;
+      }
+
+      let html = "";
+      if (data.client) {
+        const c = data.client;
+        html += `
+          <div class="info-card" style="background:#ecfdf5;border-color:#10b981;">
+            <h4>👤 МИЖОЗ МАЪЛУМОТЛАРИ</h4>
+            <p><b>Исм:</b> ${c.name || 'Мижоз'}</p>
+            <p><b>Шахсий код:</b> <code>${c.card_id}</code></p>
+            <p><b>Телефон:</b> ${c.phone || '—'}</p>
+            <p><b>Даража:</b> ${c.tier} | <b>Бонус:</b> <b>${Number(c.bonus || 0).toLocaleString()} сўм</b></p>
+          </div>
+        `;
+      }
+
+      if (data.orders && data.orders.length) {
+        data.orders.forEach(o => {
+          const paid = o.payment_status === "Тўланган ✅";
+          const toCollect = o.final_payable || o.total;
+          html += `
+            <div class="info-card">
+              <h4>🧾 БУЮРТМА #${o.id} · ${o.order_status}</h4>
+              <p style="margin-bottom:6px;">🛒 ${o.items}</p>
+              <p>💳 Тўлов тури: <b>${o.payment_method}</b> (${o.payment_status})</p>
+              <p style="font-size:16px;color:var(--blue);font-weight:800;margin-top:6px;">
+                ${paid ? "✅ Тўлов тўлиқ амалга оширилган (0 сўм)" : `💵 Мижоздан олинади: ${Number(toCollect).toLocaleString()} сўм`}
+              </p>
+              <div style="display:flex;gap:8px;margin-top:10px;">
+                ${!paid ? `<button onclick="staffOrderAction(${o.id}, 'pay_ok', '${q}')" style="flex:1;background:var(--blue);color:#fff;border:none;padding:10px;border-radius:10px;font-weight:800;">💳 Тўлов олинди</button>` : ''}
+                ${o.order_status !== "Топширилган ✅" ? `<button onclick="staffOrderAction(${o.id}, 'handover', '${q}')" style="flex:1;background:var(--emerald);color:#fff;border:none;padding:10px;border-radius:10px;font-weight:800;">🏁 Топширилди</button>` : ''}
+              </div>
+            </div>
+          `;
+        });
+      } else {
+        html += `<div class="info-card"><p>ℹ️ Ушбу мижозда ҳозирча фаол онлайн буюртма йўқ (дўконнинг ўзидан харид қилмоқда).</p></div>`;
+      }
+      resBox.innerHTML = html;
+    } catch (e) {
+      resBox.innerHTML = `<div class="info-card"><p>❌ Сервер билан алоқа хатоси.</p></div>`;
+    }
+  }
+
+  async function staffOrderAction(orderId, action, reloadCode) {
+    try {
+      const res = await fetch(`${API_BASE}/api/staff/order_action`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ order_id: orderId, action, staff_id: staffIdParam })
+      });
+      const d = await res.json();
+      if (d.ok) {
+        showToast(d.msg);
+        lookupClientCode(reloadCode);
+      }
+    } catch (e) {}
+  }
+
+  // ================= ODDIY DO'KON VA SAVATCHA FUNKSIYALARI =================
   function getCartQty(id) {
     const f = cart.find(x => x.id === id);
     return f ? f.qty : 0;
@@ -278,7 +549,7 @@
     const targetQty = getCartQty(id) + delta;
 
     if (delta > 0 && targetQty > maxAvail) {
-      showToast(`⚠️ Дўконда жами ${maxAvail} дона бор!`);
+      showToast(`⚠️ Жами ${maxAvail} дона мавжуд!`);
       return;
     }
 
@@ -306,14 +577,13 @@
     } catch (e) {}
   }
 
-  /* KARTANI BOSGANDA AVVAL BITTA KATTALASHIB (POP-ZOOM) KEYIN ICHIGA KIRISH */
   function popAndOpenDetail(id, cardEl) {
     if (cardEl) {
       cardEl.classList.add("pop-zoom");
       setTimeout(() => {
         cardEl.classList.remove("pop-zoom");
         openDetail(id);
-      }, 210);
+      }, 200);
     } else {
       openDetail(id);
     }
@@ -323,16 +593,16 @@
     const liked = likes.includes(p.id);
     const inCartQty = getCartQty(p.id);
     const avail = p.available_stock !== undefined ? p.available_stock : p.stock;
-    const thumb = p.image ? `<img src="${p.image}" alt="" />` : `<div style="font-size:40px;">💊</div>`;
+    const thumb = p.image ? `<img src="${p.image}" alt="" />` : `<div style="font-size:42px;">🌿</div>`;
     const delay = Math.min(idx * 0.05, 0.4);
 
     const actionHtml = inCartQty > 0
       ? `<div class="card-qty-bar" onclick="event.stopPropagation()">
            <button onclick="changeCardQty(${p.id}, -1, event)">−</button>
-           <span style="font-weight:800;">+${inCartQty}</span>
+           <span style="font-weight:800;color:var(--emerald);">+${inCartQty}</span>
            <button onclick="changeCardQty(${p.id}, 1, event)">+</button>
          </div>`
-      : `<button class="card-cart-btn" onclick="changeCardQty(${p.id}, 1, event)">Саватга</button>`;
+      : `<button class="card-cart-btn" onclick="changeCardQty(${p.id}, 1, event)">${T.addCart}</button>`;
 
     return `
       <div class="p-card" style="animation-delay:${delay}s" onclick="popAndOpenDetail(${p.id}, this)">
@@ -346,13 +616,13 @@
           <div class="p-name">${p.name}</div>
           <div class="p-meta-row">
             <span>⭐ ${Number(p.rating_avg || 5).toFixed(1)}</span>
-            <span style="color:#94a3b8;">Сотилган: ${p.sold_count || 0}</span>
+            <span style="color:var(--muted);">Sold: ${p.sold_count || 0}</span>
           </div>
         </div>
         <div>
           ${p.old_price > p.price ? `<div class="p-old-price">${Number(p.old_price).toLocaleString()} сўм</div>` : ''}
           <div class="p-price">${Number(p.price || 0).toLocaleString()} сўм</div>
-          <div class="p-stock">Қолдиқ: ${avail} дона</div>
+          <div class="p-stock">Stock: ${avail}</div>
           ${actionHtml}
         </div>
       </div>
@@ -390,13 +660,16 @@
   function renderBrandChips() {
     const brands = ["ALL", ...new Set(allProducts.map(p => p.brand || "Vitora"))];
     document.getElementById("brandChips").innerHTML = brands.map(b =>
-      `<button class="f-chip ${selectedBrand === b ? 'active' : ''}" onclick="setBrand('${b}')">${b === 'ALL' ? '🏷 Барча фирмалар' : b}</button>`
+      `<button class="f-chip ${selectedBrand === b ? 'active' : ''}" onclick="setBrand('${b}')">${b === 'ALL' ? '🏷 All' : b}</button>`
     ).join("");
   }
 
   async function loadProducts() {
+    applyTranslationsAndRoleUI();
     const hr = new Date().getHours();
-    const greet = hr < 12 ? "Хайрли тонг" : hr < 18 ? "Хайрли кун" : "Хайрли кеч";
+    const greet = LANG === "en" ? (hr < 12 ? "Good morning" : hr < 18 ? "Good afternoon" : "Good evening")
+                : LANG === "ru" ? (hr < 12 ? "Доброе утро" : hr < 18 ? "Добрый день" : "Добрый вечер")
+                : (hr < 12 ? "Хайрли тонг" : hr < 18 ? "Хайрли кун" : "Хайрли кеч");
     document.getElementById("greetingText").textContent = `${greet}${user && user.first_name ? ', ' + user.first_name : ''}! 👋`;
 
     try {
@@ -406,7 +679,7 @@
       allNews = data.news || [];
       if (data.card_number) document.getElementById("humoCardNum").textContent = data.card_number;
 
-      if (user && user.id) {
+      if (!IS_STAFF && user && user.id) {
         const ures = await fetch(`${API_BASE}/api/user/${user.id}`);
         userProfile = await ures.json();
         document.getElementById("headerTierBadge").textContent = `${userProfile.tier} · ${userProfile.cashback_pct}%`;
@@ -422,7 +695,7 @@
     const list = getFilteredProducts();
     document.getElementById("homePopularGrid").innerHTML = list.length
       ? list.slice(0, 16).map((p, i) => productCardHtml(p, i)).join("")
-      : "<p style='color:#94a3b8;grid-column:span 2;'>Маҳсулот топилмади.</p>";
+      : "<p style='color:var(--muted);grid-column:span 2;'>Ҳозирча маҳсулот киритилмаган.</p>";
   }
 
   function renderCatalog() {
@@ -456,184 +729,134 @@
       if (d.ok) {
         const p = allProducts.find(x => x.id === pid);
         if (p) { p.rating_avg = d.rating_avg; p.rating_cnt = d.rating_cnt; }
-        showToast(`⭐ ${stars} юлдуз баҳоингиз сақланди!`);
+        showToast(`⭐ ${stars} saved!`);
         openDetail(pid);
       }
     } catch (e) {}
   }
 
-  /* BOY VA AQLLI TOVAR ICHKI SAHIFASI + O'XSHASH VA QIZIQARLI TOVARLAR */
   function openDetail(id) {
     const p = allProducts.find(x => x.id === id);
     if (!p) return;
     const similar = allProducts.filter(x => x.id !== p.id && (x.category === p.category || x.brand === p.brand)).slice(0, 4);
-    const interesting = allProducts.filter(x => x.id !== p.id && !similar.some(s => s.id === x.id)).slice(0, 4);
 
     document.getElementById("fmTopTitle").textContent = p.name;
     document.getElementById("modalBody").innerHTML = `
       <div style="padding:16px;">
-        ${p.image ? `<img src="${p.image}" style="width:100%;max-height:230px;object-fit:contain;background:#fff;border-radius:16px;margin-bottom:14px;padding:8px;" />` : ''}
+        ${p.image ? `<img src="${p.image}" style="width:100%;max-height:230px;object-fit:contain;background:#fff;border-radius:18px;margin-bottom:14px;padding:8px;border:1px solid var(--border);" />` : ''}
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <span style="background:rgba(37,99,235,0.2);color:#93c5fd;padding:3px 10px;border-radius:10px;font-size:12px;font-weight:700;">🏷 ${p.brand || 'Vitora'}</span>
-          <span style="color:#fbbf24;font-weight:800;font-size:13px;">⭐ ${Number(p.rating_avg || 5).toFixed(1)} (${p.rating_cnt || 1} баҳо)</span>
+          <span style="background:#e6f4f0;color:var(--emerald);padding:3px 10px;border-radius:10px;font-size:12px;font-weight:800;">🏷 ${p.brand || 'Vitora'}</span>
+          <span style="color:var(--gold);font-weight:800;font-size:13px;">⭐ ${Number(p.rating_avg || 5).toFixed(1)} (${p.rating_cnt || 1})</span>
         </div>
         <div style="font-size:20px;font-weight:800;margin-bottom:6px;">${p.name}</div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-          <div style="font-size:22px;font-weight:800;color:var(--green);">${Number(p.price).toLocaleString()} сўм</div>
-          <div style="font-size:12px;color:#cbd5e1;">📦 Қолган: <b>${p.available_stock}</b> | 🔥 Сотилган: <b>${p.sold_count || 0}</b></div>
-        </div>
+        <div style="font-size:22px;font-weight:800;color:var(--blue);margin-bottom:14px;">${Number(p.price).toLocaleString()} сўм</div>
+
+        <div class="info-card"><h4>🧬 Таснифи / Description</h4><p>${p.description || p.name}</p></div>
+        <div class="info-card"><h4>📋 Қўлланилиши / Dosage</h4><p>${p.dosage || '1–2 capsules daily with meal.'}</p></div>
+        <div class="info-card"><h4>✨ Фойдаси / Benefits</h4><p>${p.benefits || 'Supports immunity and daily vitality.'}</p></div>
+        <div class="info-card"><h4>⚠️ Эҳтиёткорлик / Warnings</h4><p>${p.warnings || 'Consult a specialist if sensitive.'}</p></div>
+        <div class="info-card"><h4>🔗 Қўшиб ичиш / Combine with</h4><p>${p.combine_with || 'Vitamin D3, Omega-3, Magnesium'}</p></div>
 
         <div class="info-card">
-          <h4>🧬 Таснифи ва Таркиби</h4>
-          <p>${p.description || p.name + ' — сифатли биологик фаол қўшимча.'}</p>
-        </div>
-
-        <div class="info-card">
-          <h4>📋 Ичиш тартиби (Қўлланилиши)</h4>
-          <p>${p.dosage || 'Кунига 1–2 маҳал овқат вақтида сув билан.'}</p>
-        </div>
-
-        <div class="info-card">
-          <h4>✨ Нимага фойдали?</h4>
-          <p>${p.benefits || 'Иммунитетни мустаҳкамлайди, умумий қувват ва тонусни оширади.'}</p>
-        </div>
-
-        <div class="info-card">
-          <h4>⚠️ Нимага эътиборли бўлиш керак?</h4>
-          <p>${p.warnings || 'Шахсий таъсирчанлик бўлса шифокор билан маслаҳатлашинг.'}</p>
-        </div>
-
-        <div class="info-card">
-          <h4>🔗 Бу билан қўшиб ичиладиган дорилар</h4>
-          <p>${p.combine_with || 'Витамин D3, Омега-3, Магний'}</p>
-        </div>
-
-        <div class="info-card">
-          <h4>⭐ Маҳсулотни баҳоланг (1 дан 5 юлдузгача)</h4>
+          <h4>⭐ Баҳолаш / Rate Product</h4>
           <div class="star-bar">
             ${[1,2,3,4,5].map(s => `<button class="star-btn" onclick="rateProduct(${p.id}, ${s})">⭐ ${s}</button>`).join("")}
           </div>
         </div>
 
-        <button class="submit-btn" onclick="changeCardQty(${p.id}, 1); closeModal();">🛍 Саватга қўшиш</button>
-
+        <button class="submit-btn" onclick="changeCardQty(${p.id}, 1); closeModal();">🛍 ${T.addCart}</button>
         ${similar.length ? `<div style="font-size:16px;font-weight:800;margin:20px 0 10px;">🔄 Ўхшаш товарлар</div><div class="grid">${similar.map((x,i) => productCardHtml(x,i)).join("")}</div>` : ''}
-        ${interesting.length ? `<div style="font-size:16px;font-weight:800;margin:20px 0 10px;">✨ Сизга қизиқ бўлиши мумкин</div><div class="grid">${interesting.map((x,i) => productCardHtml(x,i)).join("")}</div>` : ''}
       </div>
     `;
     document.getElementById("fullModal").classList.add("open");
   }
 
-  /* MARKAZIY QR KOD VA BONUS OYNASI */
   function openQrModal() {
-    document.getElementById("fmTopTitle").textContent = "Шахсий QR-код & Бонус";
+    document.getElementById("fmTopTitle").textContent = "QR-код & Бонус";
     const qr = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${userCardId}`;
     document.getElementById("modalBody").innerHTML = `
-      <div style="padding:18px;text-align:center;">
-        <div class="info-card" style="background:linear-gradient(180deg,#172554,#0f172a);border-color:#3b82f6;">
-          <div style="font-size:12px;color:#93c5fd;margin-bottom:8px;">VITORA | SMART PHARM LOYALTY</div>
-          <div style="background:#fff;padding:12px;border-radius:16px;display:inline-block;margin-bottom:10px;">
-            <img src="${qr}" style="display:block;width:210px;height:210px;" />
-          </div>
-          <div style="font-size:20px;font-weight:800;letter-spacing:1.5px;margin-bottom:4px;">${userCardId}</div>
-          <div style="font-size:12px;color:#cbd5e1;margin-bottom:14px;">Кассада ушбу QR-кодни кўрсатинг</div>
-          <div style="display:flex;justify-content:space-around;background:rgba(255,255,255,0.06);padding:12px;border-radius:12px;">
-            <div><div style="font-size:11px;color:#94a3b8;">Бонус баланс</div><div style="font-size:16px;font-weight:800;color:#10b981;">${Number(userProfile.bonus).toLocaleString()} сўм</div></div>
-            <div><div style="font-size:11px;color:#94a3b8;">Даражангиз</div><div style="font-size:15px;font-weight:800;">${userProfile.tier} (${userProfile.cashback_pct}%)</div></div>
-          </div>
+      <div style="padding:20px 16px;text-align:center;">
+        <div style="background:#fff;display:inline-block;padding:16px;border-radius:20px;border:2px solid var(--emerald);box-shadow:0 10px 26px rgba(13,122,83,0.12);margin-bottom:14px;">
+          <img src="${qr}" style="width:210px;height:210px;display:block;" />
         </div>
-      </div>`;
+        <div style="font-size:20px;font-weight:800;letter-spacing:1.2px;color:var(--blue);margin-bottom:14px;">${userCardId}</div>
+        <div class="info-card" style="text-align:left;">
+          <h4>🏅 ${userProfile.tier} (${userProfile.cashback_pct}% кэшбэк)</h4>
+          <p>🎁 Бонус балансингиз: <b style="color:var(--emerald);font-size:17px;">${Number(userProfile.bonus).toLocaleString()} сўм</b></p>
+        </div>
+      </div>
+    `;
     document.getElementById("fullModal").classList.add("open");
   }
 
-  function openMoreSub(key) {
+  function openMoreSub(type) {
+    document.getElementById("fullModal").classList.add("open");
     const body = document.getElementById("modalBody");
-    if (key === "loc") {
-      document.getElementById("fmTopTitle").textContent = "📍 Жойлашув";
-      body.innerHTML = `<div style="padding:16px;"><div class="info-card"><h4>🏥 Vitora | Smart Pharm</h4><p>📍 Манзил: Самарқанд шаҳар, Қозизода Румий 56 А уй<br>🕒 Иш вақти: 08:00 – 24:00 (ҳар куни)</p></div></div>`;
-    } else if (key === "favs") {
-      document.getElementById("fmTopTitle").textContent = "♡ Севимлилар";
-      const favs = allProducts.filter(p => likes.includes(p.id));
-      body.innerHTML = `<div style="padding:14px;"><div class="grid">${favs.map((p,i) => productCardHtml(p,i)).join("")}</div></div>`;
-    } else if (key === "news") {
-      document.getElementById("fmTopTitle").textContent = "📰 Янгиликлар";
-      body.innerHTML = `<div style="padding:14px;">${allNews.map(n => `<div class="info-card">${n.image ? `<img src="${n.image}" style="width:100%;border-radius:10px;margin-bottom:8px;"/>` : ''}<p>${n.body}</p></div>`).join("")}</div>`;
+    if (type === "favs") {
+      document.getElementById("fmTopTitle").textContent = "Севимлилар";
+      const favItems = allProducts.filter(p => likes.includes(p.id));
+      body.innerHTML = `<div style="padding:16px;"><div class="grid">${favItems.length ? favItems.map((p,i) => productCardHtml(p,i)).join("") : "<p>Бўш.</p>"}</div></div>`;
+    } else if (type === "loc") {
+      document.getElementById("fmTopTitle").textContent = "Жойлашув";
+      body.innerHTML = `<div style="padding:16px;"><div class="info-card"><h4>🏥 Vitora | Smart Pharm</h4><p>📍 Самарқанд шаҳар, Қозизода Румий 56 А уй<br>🕒 08:00 – 24:00</p></div></div>`;
+    } else if (type === "news") {
+      document.getElementById("fmTopTitle").textContent = "Янгиликлар";
+      body.innerHTML = `<div style="padding:16px;">${allNews.length ? allNews.map(n => `<div class="info-card">${n.image ? `<img src="${n.image}" style="width:100%;border-radius:12px;margin-bottom:8px;">` : ''}<p>${n.body}</p></div>`).join("") : "<p>Янгиликлар йўқ.</p>"}</div>`;
     }
-    document.getElementById("fullModal").classList.add("open");
   }
 
-  function closeModal() { document.getElementById("fullModal").classList.remove("open"); }
+  function closeModal() {
+    stopCameraScanner();
+    document.getElementById("fullModal").classList.remove("open");
+  }
 
   function updateCartBadge() {
-    const c = cart.reduce((s, x) => s + x.qty, 0);
-    const b = document.getElementById("cartBadge");
-    b.style.display = c > 0 ? "block" : "none";
-    b.textContent = c;
-  }
-
-  function showToast(msg) {
-    const t = document.getElementById("toast");
-    t.textContent = msg;
-    t.style.display = "block";
-    setTimeout(() => { t.style.display = "none"; }, 1800);
-  }
-
-  function switchTab(tab) {
-    closeModal();
-    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
-    document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
-    document.getElementById("topHeader").style.display = (tab === "home" || tab === "cat") ? "block" : "none";
-    document.getElementById(`sec-${tab}`).classList.add("active");
-    const navEl = document.getElementById(`nav-${tab}`);
-    if (navEl) navEl.classList.add("active");
-    if (tab === "cart") renderCart();
+    const count = cart.reduce((a, b) => a + b.qty, 0);
+    const badge = document.getElementById("cartBadge");
+    badge.style.display = count > 0 ? "block" : "none";
+    badge.textContent = count;
   }
 
   function renderCart() {
-    const list = document.getElementById("cartList");
+    const listEl = document.getElementById("cartList");
     const totalBox = document.getElementById("cartTotalBox");
-    const form = document.getElementById("orderForm");
-    const bBox = document.getElementById("bonusToggleBox");
+    const formEl = document.getElementById("orderForm");
+    const bonusBox = document.getElementById("bonusToggleBox");
 
     if (!cart.length) {
-      list.innerHTML = "<p style='color:#94a3b8'>Саватча бўш.</p>";
-      totalBox.textContent = "";
-      form.style.display = "none";
-      bBox.style.display = "none";
+      listEl.innerHTML = "<p style='color:var(--muted);'>Саватча бўш.</p>";
+      totalBox.innerHTML = "";
+      formEl.style.display = "none";
+      bonusBox.style.display = "none";
       return;
     }
 
     let total = 0;
-    list.innerHTML = cart.map(item => {
+    listEl.innerHTML = cart.map(item => {
       total += item.price * item.qty;
       return `
         <div class="cart-item">
-          <div>
-            <div style="font-size:13px;font-weight:700;">${item.name}</div>
-            <div style="font-size:12px;color:#94a3b8;">${item.qty} × ${item.price.toLocaleString()} сўм</div>
+          <div><div style="font-weight:700;font-size:14px;">${item.name}</div><div style="font-size:13px;color:var(--blue);font-weight:700;">${(item.price * item.qty).toLocaleString()} сўм</div></div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button onclick="changeCardQty(${item.id}, -1); renderCart();" style="width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:#fff;font-weight:800;">−</button>
+            <span style="font-weight:800;">${item.qty}</span>
+            <button onclick="changeCardQty(${item.id}, 1); renderCart();" style="width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:#fff;font-weight:800;">+</button>
           </div>
-          <div style="display:flex;align-items:center;gap:6px;">
-            <button onclick="changeCardQty(${item.id}, -1); renderCart();" style="background:#1e293b;color:#fff;border:none;border-radius:7px;width:28px;height:28px;">−</button>
-            <span style="font-weight:800;">+${item.qty}</span>
-            <button onclick="changeCardQty(${item.id}, 1); renderCart();" style="background:#2563eb;color:#fff;border:none;border-radius:7px;width:28px;height:28px;">+</button>
-          </div>
-        </div>`;
+        </div>
+      `;
     }).join("");
 
-    if (userProfile.bonus > 0) {
-      bBox.style.display = "block";
-      const maxDisc = Math.min(userProfile.bonus, Math.floor(total * 0.3));
-      document.getElementById("bonusChkText").textContent = `🎁 Бонусни ишлатиш (-${maxDisc.toLocaleString()} сўм чегирма)`;
+    let disc = 0;
+    if (!IS_STAFF && userProfile.bonus > 0) {
+      bonusBox.style.display = "block";
+      const maxUse = Math.min(userProfile.bonus, Math.floor(total * 0.3));
+      document.getElementById("bonusChkText").textContent = `🎁 Бонус ишлатиш (-${maxUse.toLocaleString()} сўм)`;
+      if (document.getElementById("chkUseBonus").checked) disc = maxUse;
     }
-    const useB = document.getElementById("chkUseBonus").checked;
-    const disc = useB ? Math.min(userProfile.bonus, Math.floor(total * 0.3)) : 0;
-    const finalSum = Math.max(0, total - disc);
 
-    totalBox.innerHTML = disc > 0
-      ? `Жами: <s>${total.toLocaleString()}</s> → <span style="color:var(--green)">${finalSum.toLocaleString()} сўм</span>`
-      : `Жами: ${total.toLocaleString()} сўм`;
-    form.style.display = "block";
-    toggleCardBox();
+    const finalPay = Math.max(0, total - disc);
+    totalBox.innerHTML = `Тўлов: <span style="color:var(--emerald);">${finalPay.toLocaleString()} сўм</span>`;
+    formEl.style.display = "block";
   }
 
   function toggleAddress() {
@@ -641,47 +864,69 @@
   }
 
   function toggleCardBox() {
-    const p = document.getElementById("inpPayment").value;
-    document.getElementById("cardCopyBox").style.display = (p === "Click" || p === "Payme") ? "flex" : "none";
+    const pm = document.getElementById("inpPayment").value;
+    document.getElementById("cardCopyBox").style.display = (pm === "Click" || pm === "Payme") ? "flex" : "none";
   }
 
   function copyCardNum() {
     const num = document.getElementById("humoCardNum").textContent.replace(/\s+/g, "");
-    navigator.clipboard && navigator.clipboard.writeText(num);
+    navigator.clipboard.writeText(num);
     showToast("📋 Карта рақами нусхаланди!");
   }
 
   async function submitOrder() {
-    const name = document.getElementById("inpName").value.trim() || "Мижоз";
+    const name = document.getElementById("inpName").value.trim();
     const phone = document.getElementById("inpPhone").value.trim();
-    if (!phone) { alert("Телефон рақамингизни киритинг!"); return; }
-    const total = cart.reduce((s, x) => s + x.price * x.qty, 0);
-    const itemsText = cart.map(x => `• ${x.name} (${x.qty} дона) — ${(x.price * x.qty).toLocaleString()} сўм`).join("\n");
+    const delivery_type = document.getElementById("inpDelivery").value;
+    const address = document.getElementById("inpAddress").value.trim();
+    const payment_method = document.getElementById("inpPayment").value;
+    const use_bonus = document.getElementById("chkUseBonus").checked;
 
-    const res = await fetch(`${API_BASE}/api/order`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        user_id: user ? user.id : 0,
-        session_id: sessionId,
-        name, username: user ? (user.username || "yoq") : "yoq",
-        card: userCardId, phone,
-        delivery_type: document.getElementById("inpDelivery").value,
-        address: document.getElementById("inpAddress").value.trim(),
-        payment_method: document.getElementById("inpPayment").value,
-        use_bonus: document.getElementById("chkUseBonus").checked,
-        items: itemsText, total, cart
-      })
-    });
-    const data = await res.json();
-    if (data.ok) {
-      cart = [];
-      localStorage.setItem("vitora_cart", "[]");
-      updateCartBadge();
-      renderCart();
-      showToast("✅ Буюртма #" + data.order_id + " юборилди!");
-      if (tg) setTimeout(() => tg.close(), 1200);
+    if (!name || !phone) {
+      showToast("⚠️ Исм ва телефонни киритинг!");
+      return;
     }
+
+    const total = cart.reduce((a, b) => a + b.price * b.qty, 0);
+    const items = cart.map(x => `${x.name} x${x.qty}`).join(", ");
+
+    try {
+      const res = await fetch(`${API_BASE}/api/order`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: user ? user.id : 0,
+          session_id: sessionId,
+          name, username: user && user.username ? user.username : "yoq",
+          card: userCardId, phone, delivery_type, address, payment_method, items, total, use_bonus, cart
+        })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        cart = [];
+        localStorage.setItem("vitora_cart", "[]");
+        updateCartBadge();
+        showToast("✅ Буюртма #" + data.order_id + " юборилди!");
+        loadProducts();
+        switchTab("home");
+      }
+    } catch (e) {}
+  }
+
+  function switchTab(tab) {
+    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+    document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+    document.getElementById("sec-" + tab).classList.add("active");
+    const nav = document.getElementById("nav-" + tab);
+    if (nav) nav.classList.add("active");
+    if (tab === "cart") renderCart();
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.style.display = "block";
+    setTimeout(() => { t.style.display = "none"; }, 2200);
   }
 
   loadProducts();
